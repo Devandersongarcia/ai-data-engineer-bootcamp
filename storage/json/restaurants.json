@@ -1,0 +1,539 @@
+{
+  "metadata": {
+    "version": "1.1",
+    "last_updated": "2025-07-31",
+    "total_restaurants": 8,
+    "allergen_guide_reference": "docs-alergenicos-restricoes-alimentares.docx",
+    "cuisine_types": ["Italian", "Chinese", "Japanese", "Mexican", "Indian", "American", "French", "Thai"],
+    "emergency_info": {
+      "emergency_number": "192",
+      "hospitals": [
+        {
+          "name": "Hospital João XXIII",
+          "phone": "(31) 3239-9200"
+        },
+        {
+          "name": "Hospital das Clínicas UFMG",
+          "phone": "(31) 3409-9300"
+        }
+      ]
+    }
+  },
+  "restaurants": [
+    {
+      "id": "la-bella-italia",
+      "name": "La Bella Italia",
+      "cuisine_type": "Italian",
+      "description": "Restaurante italiano autêntico em Belo Horizonte, oferecendo uma experiência gastronômica tradicional com massas frescas, risotos cremosos e pizzas napolitanas. Ambiente acolhedor perfeito para jantares românticos ou reuniões familiares.",
+      "rating": 4.6,
+      "price_range": "$$-$$$",
+      "address": {
+        "street": "Rua da Bahia, 1000",
+        "neighborhood": "Savassi",
+        "city": "Belo Horizonte",
+        "state": "MG",
+        "country": "Brasil",
+        "postal_code": "30160-011"
+      },
+      "contact": {
+        "phone": "(31) 3333-4444",
+        "email": "contato@labellaitalia.com.br",
+        "website": "www.labellaitalia.com.br"
+      },
+      "hours": {
+        "monday_friday": "12:00 - 22:00",
+        "saturday": "12:00 - 23:00",
+        "sunday": "12:00 - 21:00"
+      },
+      "specialties": [
+        "Spaghetti Carbonara",
+        "Risotto ai Funghi Porcini",
+        "Pizza Margherita",
+        "Ossobuco alla Milanese",
+        "Tiramisu"
+      ],
+      "allergen_info": {
+        "common_allergens": ["lactose", "gluten", "eggs"],
+        "severity_level": "high",
+        "gluten_free_options": true,
+        "lactose_free_options": false,
+        "vegan_options": false,
+        "vegetarian_options": true,
+        "cross_contamination_risk": "medium",
+        "safe_dishes_for_celiacs": ["Carpaccio de Carne", "Risotto ai Funghi Porcini", "Ossobuco alla Milanese"],
+        "reference_section": "section_4_italian_cuisine"
+      },
+      "dietary_accommodations": {
+        "gluten_free_pasta": true,
+        "dairy_substitutes": false,
+        "separate_cooking_area": false,
+        "allergen_menu_available": true
+      },
+      "reviews_summary": {
+        "total_reviews": 1250,
+        "positive_mentions": ["authentic flavors", "fresh pasta", "excellent service"],
+        "concerns": ["limited parking", "noisy on weekends"]
+      }
+    },
+    {
+      "id": "dragao-dourado",
+      "name": "Dragão Dourado",
+      "cuisine_type": "Chinese",
+      "description": "Autêntico restaurante chinês oferecendo pratos tradicionais de várias regiões da China. Especializado em culinária de Sichuan com opções picantes e saborosas. Ambiente decorado com elementos orientais tradicionais.",
+      "rating": 4.4,
+      "price_range": "$$",
+      "address": {
+        "street": "Avenida do Contorno, 2000",
+        "neighborhood": "Funcionários",
+        "city": "Belo Horizonte",
+        "state": "MG",
+        "country": "Brasil",
+        "postal_code": "30110-017"
+      },
+      "contact": {
+        "phone": "(31) 3333-5555",
+        "email": "reservas@dragaodourado.com.br"
+      },
+      "hours": {
+        "monday_friday": "11:30 - 22:30",
+        "saturday_sunday": "11:30 - 23:00"
+      },
+      "specialties": [
+        "Kung Pao Chicken",
+        "Mapo Tofu",
+        "Beijing Duck",
+        "Sweet and Sour Pork",
+        "Chow Mein"
+      ],
+      "allergen_info": {
+        "common_allergens": ["soy", "gluten", "peanuts", "sesame", "shellfish"],
+        "severity_level": "very_high",
+        "gluten_free_options": true,
+        "lactose_free_options": true,
+        "vegan_options": true,
+        "vegetarian_options": true,
+        "cross_contamination_risk": "high",
+        "peanut_allergy_warning": "Many dishes contain peanuts or peanut oil",
+        "safe_dishes_for_celiacs": ["Salada de Pepino Chinês", "Mapo Tofu"],
+        "reference_section": "section_4_chinese_cuisine"
+      },
+      "dietary_accommodations": {
+        "msg_free_options": true,
+        "tamari_available": true,
+        "separate_wok_for_allergies": false,
+        "ingredient_list_available": true
+      },
+      "reviews_summary": {
+        "total_reviews": 890,
+        "positive_mentions": ["authentic flavors", "generous portions", "spicy options"],
+        "concerns": ["high sodium content", "limited dessert options"]
+      }
+    },
+    {
+      "id": "sakura-sushi-bar",
+      "name": "Sakura Sushi Bar",
+      "cuisine_type": "Japanese",
+      "description": "Sushi bar premium oferecendo a mais alta qualidade em culinária japonesa. Peixes frescos importados diariamente, sushi chef com mais de 20 anos de experiência e ambiente zen minimalista.",
+      "rating": 4.8,
+      "price_range": "$$$",
+      "address": {
+        "street": "Rua Pernambuco, 1500",
+        "neighborhood": "Savassi",
+        "city": "Belo Horizonte",
+        "state": "MG",
+        "country": "Brasil",
+        "postal_code": "30130-151"
+      },
+      "contact": {
+        "phone": "(31) 3333-6666",
+        "email": "reservas@sakurasushi.com.br",
+        "instagram": "@sakurasushibh"
+      },
+      "hours": {
+        "tuesday_thursday": "12:00 - 23:00",
+        "friday_saturday": "12:00 - 00:00",
+        "sunday": "12:00 - 22:00",
+        "monday": "Closed"
+      },
+      "specialties": [
+        "Combinado Sushi Premium",
+        "Tempura Misto",
+        "Yakisoba",
+        "Teriyaki Salmon",
+        "Chirashi Bowl"
+      ],
+      "allergen_info": {
+        "common_allergens": ["fish", "shellfish", "soy", "gluten", "sesame"],
+        "severity_level": "very_high",
+        "gluten_free_options": true,
+        "lactose_free_options": true,
+        "vegan_options": false,
+        "vegetarian_options": true,
+        "cross_contamination_risk": "very_high",
+        "raw_fish_warning": true,
+        "safe_dishes_for_celiacs": ["Sashimi", "Edamame", "Sunomono"],
+        "reference_section": "section_4_japanese_cuisine"
+      },
+      "dietary_accommodations": {
+        "gluten_free_soy_sauce": true,
+        "separate_cutting_boards": true,
+        "shellfish_free_options": true,
+        "cooked_options_available": true
+      },
+      "reviews_summary": {
+        "total_reviews": 2100,
+        "positive_mentions": ["fresh fish", "authentic experience", "excellent presentation"],
+        "concerns": ["expensive", "long wait times on weekends"]
+      }
+    },
+    {
+      "id": "el-mariachi",
+      "name": "El Mariachi",
+      "cuisine_type": "Mexican",
+      "description": "Vibrante restaurante mexicano com decoração colorida e música ao vivo nos fins de semana. Oferece autêntica comida mexicana com ingredientes importados e tequilas premium.",
+      "rating": 4.5,
+      "price_range": "$$",
+      "address": {
+        "street": "Rua Sergipe, 800",
+        "neighborhood": "Savassi",
+        "city": "Belo Horizonte",
+        "state": "MG",
+        "country": "Brasil",
+        "postal_code": "30130-171"
+      },
+      "contact": {
+        "phone": "(31) 3333-7777",
+        "email": "hola@elmariachi.com.br",
+        "website": "www.elmariachibh.com.br"
+      },
+      "hours": {
+        "monday_thursday": "11:00 - 23:00",
+        "friday_saturday": "11:00 - 01:00",
+        "sunday": "11:00 - 22:00"
+      },
+      "specialties": [
+        "Guacamole com Chips",
+        "Tacos Al Pastor",
+        "Burrito Bowl",
+        "Fajitas Mistas",
+        "Margaritas"
+      ],
+      "allergen_info": {
+        "common_allergens": ["lactose", "gluten", "fish"],
+        "severity_level": "medium",
+        "gluten_free_options": true,
+        "lactose_free_options": true,
+        "vegan_options": true,
+        "vegetarian_options": true,
+        "cross_contamination_risk": "low",
+        "corn_tortilla_available": true,
+        "safe_dishes_for_celiacs": ["Guacamole", "Ceviche", "Fajitas (with corn tortillas)"],
+        "reference_section": "section_4_mexican_cuisine"
+      },
+      "dietary_accommodations": {
+        "corn_tortillas": true,
+        "dairy_free_options": true,
+        "spice_level_adjustable": true,
+        "separate_fryer": false
+      },
+      "reviews_summary": {
+        "total_reviews": 1680,
+        "positive_mentions": ["great margaritas", "authentic flavors", "fun atmosphere"],
+        "concerns": ["can be very spicy", "loud music on weekends"]
+      }
+    },
+    {
+      "id": "taj-mahal",
+      "name": "Taj Mahal",
+      "cuisine_type": "Indian",
+      "description": "Elegante restaurante indiano oferecendo pratos tradicionais de diversas regiões da Índia. Forno tandoor autêntico, especiarias importadas e opções vegetarianas abundantes.",
+      "rating": 4.7,
+      "price_range": "$$-$$$",
+      "address": {
+        "street": "Rua Paraíba, 900",
+        "neighborhood": "Funcionários",
+        "city": "Belo Horizonte",
+        "state": "MG",
+        "country": "Brasil",
+        "postal_code": "30130-141"
+      },
+      "contact": {
+        "phone": "(31) 3333-8888",
+        "email": "namaste@tajmahalbh.com.br"
+      },
+      "hours": {
+        "tuesday_sunday": "11:30 - 22:30",
+        "monday": "Closed"
+      },
+      "specialties": [
+        "Chicken Tikka Masala",
+        "Palak Paneer",
+        "Biryani de Cordeiro",
+        "Dal Makhani",
+        "Naan"
+      ],
+      "allergen_info": {
+        "common_allergens": ["lactose", "gluten", "nuts"],
+        "severity_level": "high",
+        "gluten_free_options": true,
+        "lactose_free_options": false,
+        "vegan_options": true,
+        "vegetarian_options": true,
+        "cross_contamination_risk": "medium",
+        "nut_allergy_warning": "Many dishes and desserts contain nuts",
+        "safe_dishes_for_celiacs": ["Pakoras", "Chicken Tikka", "Papadum"],
+        "reference_section": "section_4_indian_cuisine"
+      },
+      "dietary_accommodations": {
+        "dairy_free_curry": true,
+        "nut_free_options": true,
+        "spice_level_customizable": true,
+        "ghee_substitutes": true
+      },
+      "reviews_summary": {
+        "total_reviews": 1420,
+        "positive_mentions": ["authentic spices", "excellent vegetarian options", "friendly service"],
+        "concerns": ["heavy use of cream", "some dishes very spicy"]
+      }
+    },
+    {
+      "id": "stars-stripes-diner",
+      "name": "Stars & Stripes Diner",
+      "cuisine_type": "American",
+      "description": "Clássico diner americano com decoração retrô dos anos 50. Hambúrgueres suculentos, milkshakes cremosos e porções generosas. Atmosfera nostálgica com jukebox e bancos vermelhos.",
+      "rating": 4.3,
+      "price_range": "$$",
+      "address": {
+        "street": "Avenida Bias Fortes, 1200",
+        "neighborhood": "Lourdes",
+        "city": "Belo Horizonte",
+        "state": "MG",
+        "country": "Brasil",
+        "postal_code": "30170-011"
+      },
+      "contact": {
+        "phone": "(31) 3333-9999",
+        "email": "hello@starsandstripes.com.br",
+        "facebook": "StarsStripesBH"
+      },
+      "hours": {
+        "sunday_thursday": "11:00 - 00:00",
+        "friday_saturday": "11:00 - 02:00"
+      },
+      "specialties": [
+        "Classic Burger",
+        "BBQ Ribs",
+        "Mac and Cheese",
+        "Buffalo Wings",
+        "Milkshakes"
+      ],
+      "allergen_info": {
+        "common_allergens": ["lactose", "gluten", "eggs"],
+        "severity_level": "medium",
+        "gluten_free_options": true,
+        "lactose_free_options": false,
+        "vegan_options": false,
+        "vegetarian_options": true,
+        "cross_contamination_risk": "medium",
+        "shared_fryer_warning": true,
+        "safe_dishes_for_celiacs": ["BBQ Ribs", "Grilled Steak", "Buffalo Wings"],
+        "reference_section": "section_4_american_cuisine"
+      },
+      "dietary_accommodations": {
+        "gluten_free_buns": true,
+        "lettuce_wrap_burgers": true,
+        "grilled_options": true,
+        "allergen_fryer": false
+      },
+      "reviews_summary": {
+        "total_reviews": 2340,
+        "positive_mentions": ["huge portions", "great burgers", "nostalgic atmosphere"],
+        "concerns": ["greasy food", "limited healthy options"]
+      }
+    },
+    {
+      "id": "le-petit-bistro",
+      "name": "Le Petit Bistro",
+      "cuisine_type": "French",
+      "description": "Sofisticado bistrô francês com ambiente íntimo e romântico. Chef formado em Paris, carta de vinhos premiada e menu sazonal com ingredientes frescos. Perfeito para ocasiões especiais.",
+      "rating": 4.9,
+      "price_range": "$$$-$$$$",
+      "address": {
+        "street": "Rua Levindo Lopes, 333",
+        "neighborhood": "Savassi",
+        "city": "Belo Horizonte",
+        "state": "MG",
+        "country": "Brasil",
+        "postal_code": "30140-170"
+      },
+      "contact": {
+        "phone": "(31) 3333-0000",
+        "email": "bonjour@lepetitbistro.com.br",
+        "website": "www.lepetitbistrobh.com.br"
+      },
+      "hours": {
+        "tuesday_saturday": "12:00 - 22:00",
+        "sunday": "12:00 - 16:00",
+        "monday": "Closed"
+      },
+      "specialties": [
+        "Escargots de Bourgogne",
+        "Coq au Vin",
+        "Boeuf Bourguignon",
+        "Duck Confit",
+        "Crème Brûlée"
+      ],
+      "allergen_info": {
+        "common_allergens": ["lactose", "gluten", "eggs", "sulfites"],
+        "severity_level": "very_high",
+        "gluten_free_options": true,
+        "lactose_free_options": false,
+        "vegan_options": false,
+        "vegetarian_options": true,
+        "cross_contamination_risk": "low",
+        "butter_usage_warning": "Extensive use of butter in most dishes",
+        "safe_dishes_for_celiacs": ["Ratatouille", "Grilled meats", "Some salads"],
+        "reference_section": "section_4_french_cuisine"
+      },
+      "dietary_accommodations": {
+        "sauce_modifications": true,
+        "wine_pairing_alternatives": true,
+        "chef_consultation": true,
+        "custom_menus": true
+      },
+      "reviews_summary": {
+        "total_reviews": 780,
+        "positive_mentions": ["exceptional food", "romantic atmosphere", "impeccable service"],
+        "concerns": ["very expensive", "small portions", "limited parking"]
+      }
+    },
+    {
+      "id": "bangkok-sabores",
+      "name": "Bangkok Sabores",
+      "cuisine_type": "Thai",
+      "description": "Autêntico restaurante tailandês com pratos tradicionais picantes e aromáticos. Ingredientes importados diretamente da Tailândia, incluindo ervas frescas e especiarias. Ambiente decorado com arte tailandesa e atmosfera acolhedora.",
+      "rating": 4.6,
+      "price_range": "$",
+      "address": {
+        "street": "Rua Sapucaí, 450",
+        "neighborhood": "Floresta",
+        "city": "Belo Horizonte",
+        "state": "MG",
+        "country": "Brasil",
+        "postal_code": "31110-530"
+      },
+      "contact": {
+        "phone": "(31) 3456-7890",
+        "email": "contato@bangkoksabores.com.br",
+        "instagram": "@bangkoksaboresbh"
+      },
+      "hours": {
+        "monday_sunday": "11:00 - 22:00"
+      },
+      "specialties": [
+        "Pad Thai",
+        "Curry Verde Tailandês",
+        "Tom Yum Goong",
+        "Massaman de Carne",
+        "Mango Sticky Rice"
+      ],
+      "allergen_info": {
+        "common_allergens": ["peanuts", "shellfish", "soy", "gluten", "fish"],
+        "severity_level": "very_high",
+        "gluten_free_options": true,
+        "lactose_free_options": true,
+        "vegan_options": true,
+        "vegetarian_options": true,
+        "cross_contamination_risk": "high",
+        "peanut_allergy_warning": "EXTREME CAUTION: Many dishes contain peanuts or peanut sauce",
+        "safe_dishes_for_celiacs": ["Tom Yum Goong", "All curries", "Mango Sticky Rice"],
+        "safe_dishes_without_peanuts": ["Tom Yum Goong", "Curry Verde", "Peixe com Molho de Tamarindo"],
+        "reference_section": "section_4_thai_cuisine"
+      },
+      "dietary_accommodations": {
+        "peanut_free_preparation": true,
+        "coconut_milk_based": true,
+        "fish_sauce_alternatives": true,
+        "spice_level_adjustable": true,
+        "separate_wok_available": false
+      },
+      "special_warnings": {
+        "peanut_usage": "Peanuts are extensively used in Thai cuisine. Please inform staff of any allergies.",
+        "spice_level": "Thai food can be extremely spicy. Please specify your preferred spice level.",
+        "fish_sauce": "Fish sauce is a common ingredient in many dishes."
+      },
+      "reviews_summary": {
+        "total_reviews": 950,
+        "positive_mentions": ["authentic flavors", "fresh ingredients", "great tom yum", "friendly staff"],
+        "concerns": ["very spicy for some", "strong peanut presence", "limited parking"]
+      }
+    }
+  ],
+  "allergen_legend": {
+    "lactose": {
+      "includes": ["milk", "cheese", "butter", "cream", "yogurt"],
+      "hidden_sources": ["creamy sauces", "breads", "chocolates", "desserts"],
+      "severity": "medium"
+    },
+    "gluten": {
+      "includes": ["wheat", "barley", "rye", "contaminated oats"],
+      "hidden_sources": ["soy sauce", "beer", "thickened sauces", "imitation meat"],
+      "severity": "medium"
+    },
+    "nuts": {
+      "includes": ["almonds", "brazil nuts", "cashews", "hazelnuts", "walnuts", "pecans"],
+      "note": "Peanuts are legumes, not tree nuts",
+      "severity": "high"
+    },
+    "eggs": {
+      "includes": ["whole eggs", "egg whites", "egg yolks", "mayonnaise"],
+      "hidden_sources": ["fresh pasta", "breads", "breaded items", "ice cream"],
+      "severity": "medium"
+    },
+    "fish": {
+      "includes": ["all fish types", "caviar", "fish sauce", "anchovy paste"],
+      "cross_reactivity": "Usually allergic to all fish types",
+      "severity": "high"
+    },
+    "shellfish": {
+      "includes": ["shrimp", "lobster", "crab", "crawfish"],
+      "severity": "very_high"
+    },
+    "soy": {
+      "includes": ["soybeans", "soy sauce", "tofu", "tempeh", "miso", "edamame"],
+      "hidden_sources": ["processed foods", "margarines", "chocolates"],
+      "severity": "medium"
+    },
+    "peanuts": {
+      "common_in": ["Thai dishes", "Chinese dishes", "desserts", "cereal bars"],
+      "severity": "very_high",
+      "anaphylaxis_risk": true
+    },
+    "sesame": {
+      "includes": ["sesame seeds", "tahini", "sesame oil"],
+      "common_in": ["burger buns", "Middle Eastern food", "Asian dishes"],
+      "severity": "low"
+    },
+    "sulfites": {
+      "found_in": ["wines", "dried fruits", "processed foods"],
+      "severity": "low"
+    }
+  },
+  "cuisine_specific_warnings": {
+    "thai": {
+      "high_risk_allergens": ["peanuts", "shellfish", "fish"],
+      "common_ingredients": {
+        "fish_sauce": "Used in almost all savory dishes",
+        "peanuts": "Used in pad thai, satay sauce, som tam, massaman curry",
+        "shrimp_paste": "Common in curry pastes",
+        "coconut_milk": "Base for most curries"
+      },
+      "safety_tips": [
+        "Always specify peanut allergy - it's extremely common in Thai cuisine",
+        "Ask about fish sauce in vegetarian dishes",
+        "Request dishes without peanuts when possible",
+        "Be aware that curry pastes often contain shrimp"
+      ]
+    }
+  }
+}
