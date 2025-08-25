@@ -1,0 +1,84 @@
+models:
+  model_1:
+    name: "Detailed Restaurant Invoice"
+    description: "Full restaurant invoice with detailed items and delivery information"
+    patterns:
+      - "Pedido #"
+      - "ID: [a-z0-9]{8}-[a-z0-9]{4}"
+      - "Itens do Pedido"
+      - "Resumo do Pagamento"
+      - "Detalhes da Entrega"
+      - "CNPJ:"
+      - "UUID:"
+    fields:
+      order_number: {type: str, required: true, pattern: "Pedido #\\d+"}
+      order_id: {type: str, required: true, pattern: "ID: .+"}
+      order_date: {type: str, required: true}
+      restaurant_name: {type: str, required: true}
+      restaurant_cnpj: {type: str, required: false, pattern: "CNPJ: .+"}
+      items: {type: list, required: true}
+      subtotal: {type: float, required: true}
+      delivery_fee: {type: float, required: true}
+      service_fee: {type: float, required: true}
+      discount: {type: float, required: false}
+      tip: {type: float, required: false}
+      total: {type: float, required: true}
+      delivery_address: {type: str, required: false}
+      delivery_time: {type: str, required: false}
+      payment_method: {type: str, required: true}
+
+  model_2:
+    name: "Simplified Delivery Invoice"
+    description: "Simplified delivery format with basic information"
+    patterns:
+      - "Pedido #[a-z0-9]{4}-[a-z0-9]{4}"
+      - "Pedido entregue"
+      - "Itens do pedido"
+      - "Resumo do pagamento"
+      - "Seu entregador"
+      - "Detalhes da entrega"
+      - "✓"
+    fields:
+      order_number: {type: str, required: true, pattern: "Pedido #.+"}
+      delivery_date: {type: str, required: true}
+      restaurant_name: {type: str, required: true}
+      items: {type: list, required: true}
+      subtotal: {type: float, required: true}
+      delivery_fee: {type: float, required: true}
+      service_fee: {type: float, required: true}
+      tip: {type: float, required: false}
+      total: {type: float, required: true}
+      driver_name: {type: str, required: false}
+      driver_id: {type: str, required: false}
+      delivery_time: {type: str, required: false}
+      delivery_distance: {type: str, required: false}
+
+  model_3:
+    name: "Structured Itemized Invoice"
+    description: "Highly structured invoice with itemized details and metadata"
+    patterns:
+      - "#[A-Z0-9]{4}-[A-Z0-9]{4}"
+      - "ITENS DO PEDIDO"
+      - "TOTAL"
+      - "✓ Entrega Concluída"
+      - "Transaction ID:"
+      - "Coordenadas:"
+      - "Altitude:"
+    fields:
+      order_number: {type: str, required: true, pattern: "#.+"}
+      order_id: {type: str, required: true}
+      order_date: {type: str, required: true}
+      restaurant_name: {type: str, required: true}
+      restaurant_address: {type: str, required: true}
+      restaurant_cnpj: {type: str, required: false}
+      items: {type: list, required: true}
+      subtotal: {type: float, required: true}
+      delivery_fee: {type: float, required: true}
+      service_fee: {type: float, required: true}
+      tip: {type: float, required: false}
+      total: {type: float, required: true}
+      delivery_address: {type: str, required: true}
+      delivery_time: {type: str, required: false}
+      delivery_coordinates: {type: str, required: false}
+      payment_method: {type: str, required: true}
+      transaction_id: {type: str, required: true}

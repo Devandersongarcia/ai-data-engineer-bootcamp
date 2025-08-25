@@ -1,0 +1,16 @@
+project:
+  name: invoice-processor
+  description: AI-powered invoice processing with Airflow 3.0
+
+webserver:
+  port: 8080
+
+postgres:
+  port: 5432
+
+environment:
+  AIRFLOW__CORE__LOAD_EXAMPLES: false
+  AIRFLOW__API__API_SERVER_URL: http://api-server:8080
+  AIRFLOW__TASK_EXECUTION__ENABLE_API_CLIENT: true
+  AIRFLOW__DATA_ASSETS__ENABLE_WATCHERS: true
+  AIRFLOW__CORE__ENABLE_XCOM_PICKLING: true
