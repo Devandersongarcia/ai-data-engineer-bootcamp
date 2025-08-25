@@ -1,11 +1,16 @@
-version: '3.8'
-
 services:
   airflow:
     build: .
     environment:
       - AIRFLOW__CORE__LOAD_EXAMPLES=false
       - AIRFLOW_HOME=/usr/local/airflow
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=sqlite:////usr/local/airflow/airflow.db
+      - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=true
+      - _AIRFLOW_DB_MIGRATE=true
+      - _AIRFLOW_WWW_USER_CREATE=true
+      - _AIRFLOW_WWW_USER_USERNAME=admin
+      - _AIRFLOW_WWW_USER_PASSWORD=admin
     volumes:
       - ./dags:/usr/local/airflow/dags
       - ./include:/usr/local/airflow/include
@@ -13,4 +18,3 @@ services:
       - ./.env:/usr/local/airflow/.env
     ports:
       - "8080:8080"
-    command: standalone

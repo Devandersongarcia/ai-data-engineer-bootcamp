@@ -6,7 +6,7 @@ webserver:
   port: 8080
 
 postgres:
-  port: 5432
+  port: 5433
 
 environment:
   AIRFLOW__CORE__LOAD_EXAMPLES: false
