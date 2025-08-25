@@ -13,7 +13,3 @@ USER astro
 COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
-
-COPY config /usr/local/airflow/config
-
-COPY include/sql /usr/local/airflow/include/sql

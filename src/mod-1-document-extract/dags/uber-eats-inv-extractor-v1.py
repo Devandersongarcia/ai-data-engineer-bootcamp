@@ -3,18 +3,17 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.hooks.base import BaseHook
 from datetime import datetime, timedelta
 from minio import Minio
-import os
+from io import BytesIO
+
 import json
 import PyPDF2
-from io import BytesIO
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-# ========== DAG DEFINITION ==========
 @dag(
-    dag_id="uber_eats_invoice_extractor",
+    dag_id="uber-eats-inv-extractor-v1",
     schedule="@daily",
     start_date=datetime.now() - timedelta(days=1),
     catchup=False,
@@ -31,27 +30,22 @@ logger = logging.getLogger(__name__)
     """
 )
 def invoice_extraction_pipeline():
-    # ========== 1. LIST ALL PDF FILES ==========
     @task()
     def list_invoices(bucket: str = "invoices", prefix: str = "incoming/") -> list:
         """List all invoice PDFs stored in MinIO under a given prefix."""
         try:
-            # Get MinIO connection details
             conn = BaseHook.get_connection("minio_default")
 
-            # Parse the connection - for generic connection type, credentials are in extra field
             import json as json_lib
             extra = json_lib.loads(conn.extra) if conn.extra else {}
 
-            # Create MinIO client
             client = Minio(
                 endpoint=extra.get('endpoint', 'bucket-production-3aaf.up.railway.app'),
                 access_key=extra.get('access_key', 'dET09OhQHkq7HUaJHJm6KexgkXlkd0gN'),
                 secret_key=extra.get('secret_key', 'rKldd7Fpfroi7LlcCrQIvbrHA7ztZPIYl3V53ea70hQvYF2l'),
-                secure=True  # Railway uses HTTPS
+                secure=True
             )
 
-            # List objects
             objects = client.list_objects(bucket, prefix=prefix, recursive=True)
             pdf_keys = [obj.object_name for obj in objects if obj.object_name.endswith(".pdf")]
 
@@ -66,12 +60,10 @@ def invoice_extraction_pipeline():
             logger.error(f"Error listing files from MinIO: {str(e)}")
             raise
 
-    # ========== 2. DOWNLOAD AND EXTRACT TEXT FROM PDF ==========
     @task()
     def download_and_extract_text(bucket: str, key: str) -> dict:
         """Download a PDF from MinIO and extract its text content."""
         try:
-            # Get MinIO connection
             conn = BaseHook.get_connection("minio_default")
             extra = json.loads(conn.extra) if conn.extra else {}
 
@@ -82,13 +74,11 @@ def invoice_extraction_pipeline():
                 secure=True
             )
 
-            # Download PDF to memory
             response = client.get_object(bucket, key)
             pdf_bytes = response.read()
             response.close()
             response.release_conn()
 
-            # Extract text from PDF using PyPDF2
             pdf_file = BytesIO(pdf_bytes)
             pdf_reader = PyPDF2.PdfReader(pdf_file)
 
@@ -109,24 +99,18 @@ def invoice_extraction_pipeline():
             logger.error(f"Error processing PDF {key}: {str(e)}")
             raise
 
-    # ========== 3. EXTRACT DATA USING OPENAI ==========
     @task()
     def extract_invoice_data_with_llm(pdf_data: dict) -> dict:
         """Use OpenAI to extract structured data from invoice text."""
         try:
             from openai import OpenAI
 
-            # Get OpenAI connection
             conn = BaseHook.get_connection("openai_default")
-
-            # Initialize OpenAI client
-            # For HTTP connection type, password field contains the API key
             client = OpenAI(
                 api_key=conn.password,
                 base_url="https://api.openai.com/v1"
             )
 
-            # Prepare the prompt
             system_prompt = """You are an expert at extracting data from UberEats invoices in Portuguese/Brazilian format.
             Extract all information and return ONLY valid JSON without any markdown formatting or explanations."""
 
@@ -159,9 +143,8 @@ def invoice_extraction_pipeline():
             Important: All monetary values must be numbers, not strings.
             """
 
-            # Call OpenAI API
             response = client.chat.completions.create(
-                model="gpt-4o-mini",  # or "gpt-3.5-turbo" for lower cost
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
@@ -170,10 +153,8 @@ def invoice_extraction_pipeline():
                 max_tokens=1500
             )
 
-            # Parse the response
             llm_response = response.choices[0].message.content
 
-            # Clean and parse JSON
             json_str = llm_response
             if "```json" in json_str:
                 json_str = json_str.split("```json")[1].split("```")[0]
@@ -182,17 +163,14 @@ def invoice_extraction_pipeline():
 
             invoice_data = json.loads(json_str.strip())
 
-            # Add metadata
             invoice_data['file_key'] = pdf_data['file_key']
             invoice_data['processed_at'] = datetime.now().isoformat()
 
-            # Ensure numeric fields are floats
             numeric_fields = ['subtotal', 'taxa_entrega', 'taxa_servico', 'gorjeta', 'total']
             for field in numeric_fields:
                 if field in invoice_data and invoice_data[field] is not None:
                     invoice_data[field] = float(invoice_data[field])
 
-            # Process items
             if 'itens' in invoice_data:
                 for item in invoice_data['itens']:
                     if 'preco_unitario' in item:
@@ -221,12 +199,10 @@ def invoice_extraction_pipeline():
                 'status': 'failed'
             }
 
-    # ========== 4. STORE DATA INTO POSTGRES ==========
     @task(retries=2, retry_delay=timedelta(seconds=15))
     def store_to_postgres(invoice_data: dict) -> dict:
         """Insert structured invoice data into PostgreSQL."""
 
-        # Skip if there was an extraction error
         if invoice_data.get('status') == 'failed':
             logger.warning(f"Skipping storage for {invoice_data.get('file_key')} due to extraction error")
             return {
@@ -236,12 +212,10 @@ def invoice_extraction_pipeline():
             }
 
         try:
-            # Use the invoice_db connection
             pg_hook = PostgresHook(postgres_conn_id="invoice_db")
             conn = pg_hook.get_conn()
             cursor = conn.cursor()
 
-            # Create schema and table if they don't exist
             cursor.execute("""
                 CREATE SCHEMA IF NOT EXISTS invoices;
 
@@ -274,7 +248,6 @@ def invoice_extraction_pipeline():
                 CREATE INDEX IF NOT EXISTS idx_restaurant ON invoices.invoices(restaurant);
             """)
 
-            # Parse datetime if it's a string
             order_datetime = invoice_data.get('data_hora')
             if isinstance(order_datetime, str):
                 try:
@@ -282,7 +255,6 @@ def invoice_extraction_pipeline():
                 except:
                     order_datetime = None
 
-            # Insert the invoice
             cursor.execute("""
                            INSERT INTO invoices.invoices (order_id, restaurant, cnpj, address, order_datetime,
                                                           items, subtotal, delivery_fee, service_fee, tip, total,
@@ -313,7 +285,7 @@ def invoice_extraction_pipeline():
                                invoice_data.get('tempo_entrega'),
                                invoice_data.get('entregador'),
                                invoice_data.get('file_key'),
-                               json.dumps(invoice_data),  # Store complete raw data for reference
+                               json.dumps(invoice_data),
                                invoice_data.get('processed_at')
                            ))
 
@@ -338,7 +310,6 @@ def invoice_extraction_pipeline():
                 'file_key': invoice_data.get('file_key')
             }
 
-    # ========== 5. MOVE PROCESSED FILES ==========
     @task()
     def move_processed_file(result: dict, bucket: str = "invoices") -> dict:
         """Move successfully processed files to processed folder."""
@@ -346,7 +317,6 @@ def invoice_extraction_pipeline():
             return result
 
         try:
-            # Get MinIO connection
             conn = BaseHook.get_connection("minio_default")
             extra = json.loads(conn.extra) if conn.extra else {}
 
@@ -359,7 +329,6 @@ def invoice_extraction_pipeline():
 
             file_key = result.get('file_key')
             if file_key:
-                # Copy to processed folder
                 new_key = file_key.replace('incoming/', 'processed/')
                 client.copy_object(
                     bucket,
@@ -367,7 +336,6 @@ def invoice_extraction_pipeline():
                     f"/{bucket}/{file_key}"
                 )
 
-                # Delete from incoming
                 client.remove_object(bucket, file_key)
 
                 logger.info(f"Moved {file_key} to {new_key}")
@@ -380,7 +348,6 @@ def invoice_extraction_pipeline():
 
         return result
 
-    # ========== 6. SUMMARY REPORT ==========
     @task()
     def generate_summary(results: list) -> str:
         """Generate a summary of the processing results."""
@@ -405,28 +372,15 @@ def invoice_extraction_pipeline():
         logger.info(summary)
         return summary
 
-    # ========== ORCHESTRATION ==========
     bucket = "invoices"
     prefix = "incoming/"
 
-    # Step 1: List all PDFs
     invoice_keys = list_invoices(bucket=bucket, prefix=prefix)
-
-    # Step 2: Download and extract text from each PDF (parallel)
     pdf_data = download_and_extract_text.partial(bucket=bucket).expand(key=invoice_keys)
-
-    # Step 3: Extract structured data using LLM (parallel)
     extracted_data = extract_invoice_data_with_llm.expand(pdf_data=pdf_data)
-
-    # Step 4: Store in PostgreSQL (parallel)
     storage_results = store_to_postgres.expand(invoice_data=extracted_data)
-
-    # Step 5: Move processed files (parallel)
     final_results = move_processed_file.partial(bucket=bucket).expand(result=storage_results)
-
-    # Step 6: Generate summary
     summary = generate_summary(final_results)
 
 
-# Instantiate the DAG
 dag = invoice_extraction_pipeline()
