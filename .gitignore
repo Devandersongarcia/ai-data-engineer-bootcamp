@@ -179,3 +179,5 @@ generated/
 exports/
 
 build/data/
+
+src/mod-1-document-extract/airflow_settings.yaml
