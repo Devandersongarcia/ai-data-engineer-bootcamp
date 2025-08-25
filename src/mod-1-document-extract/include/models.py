@@ -17,7 +17,17 @@ class LineItem(BaseModel):
     customizations: Optional[List[str]] = Field(default_factory=list, description="Item customizations")
 
 class ExtractedInvoice(BaseModel):
-    """Complete extracted invoice data structure."""
+    """Complete structured representation of an extracted invoice.
+    
+    What: Contains all extracted invoice data in a validated structure.
+    Why: Provides consistent schema across different invoice formats.
+    How: LLM populates fields based on model-specific extraction rules.
+    
+    The model supports three invoice formats:
+    - Model 1: Detailed restaurant invoices with CNPJ/UUID
+    - Model 2: Simplified delivery format with driver info
+    - Model 3: Structured format with geographic data
+    """
     order_number: str = Field(..., description="Order/Invoice number")
     order_date: str = Field(..., description="Order date")
     restaurant_name: str = Field(..., description="Restaurant/Vendor name")
