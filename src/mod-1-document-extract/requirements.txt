@@ -12,4 +12,3 @@ psycopg2-binary==2.9.9
 
 opentelemetry-api>=1.33.1
 opentelemetry-sdk>=1.33.1
-astro-run-dag # This package is needed for the astro run command. It will be removed before a deploy

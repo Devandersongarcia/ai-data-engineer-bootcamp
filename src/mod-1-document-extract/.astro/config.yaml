@@ -1,6 +1,5 @@
 project:
   name: invoice-processor
-  description: AI-powered invoice processing with Airflow 3.0
 
 webserver:
   port: 8080

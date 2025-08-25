@@ -1,4 +1,4 @@
-FROM quay.io/astronomer/astro-runtime:13.1.0
+FROM astrocrpublic.azurecr.io/runtime:3.0-1
 
 USER root
 
@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
 USER astro
 
 COPY requirements.txt .
+
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY config /usr/local/airflow/config
