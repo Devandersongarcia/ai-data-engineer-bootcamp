@@ -243,7 +243,6 @@ def invoice_extraction_pipeline():
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
 
-                -- Create index for better query performance
                 CREATE INDEX IF NOT EXISTS idx_order_datetime ON invoices.invoices(order_datetime);
                 CREATE INDEX IF NOT EXISTS idx_restaurant ON invoices.invoices(restaurant);
             """)
@@ -261,9 +260,8 @@ def invoice_extraction_pipeline():
                                                           payment_method, delivery_address, delivery_time,
                                                           delivery_person,
                                                           file_key, raw_data, processed_at)
-                           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ON CONFLICT (order_id) 
-                DO
-                           UPDATE SET
+                           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                           ON CONFLICT (order_id) DO UPDATE SET
                                updated_at = CURRENT_TIMESTAMP,
                                raw_data = EXCLUDED.raw_data,
                                processed_at = EXCLUDED.processed_at

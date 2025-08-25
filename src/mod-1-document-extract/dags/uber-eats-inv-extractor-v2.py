@@ -1,8 +1,7 @@
 from airflow.decorators import dag, task, task_group
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.hooks.base import BaseHook
-# In Airflow 3.0.4, Asset is still called Dataset
-from airflow.datasets import Dataset as Asset  # Will be renamed to Asset in 3.2+
+from airflow.datasets import Dataset as Asset
 from airflow.utils.task_group import TaskGroup
 from datetime import datetime, timedelta
 from typing import List, Dict, Optional, Any
@@ -16,22 +15,16 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-# ========== AIRFLOW 3.0 ASSETS DEFINITION ==========
-# Define data assets for event-driven scheduling
-# Note: In Airflow 3.0.4, Dataset/Asset only accepts uri parameter
 minio_invoice_asset = Asset("minio://invoices/incoming/")
 postgres_invoice_asset = Asset("postgres://invoice_db/invoices.invoices")
 
 
-# ========== HELPER FUNCTIONS ==========
 @contextmanager
 def get_minio_client():
     """Context manager for MinIO client with automatic cleanup."""
     conn = BaseHook.get_connection("minio_default")
     extra = json.loads(conn.extra) if conn.extra else {}
     
-    # Use same connection approach as V1 for compatibility
-    # In production, remove these fallbacks and configure properly
     client = Minio(
         endpoint=extra.get('endpoint', 'bucket-production-3aaf.up.railway.app'),
         access_key=extra.get('access_key', 'dET09OhQHkq7HUaJHJm6KexgkXlkd0gN'),
@@ -42,7 +35,6 @@ def get_minio_client():
     try:
         yield client
     finally:
-        # Cleanup if needed
         pass
 
 
@@ -51,13 +43,12 @@ def batch_items(items: List[Any], batch_size: int) -> List[List[Any]]:
     return [items[i:i + batch_size] for i in range(0, len(items), batch_size)]
 
 
-# ========== DAG DEFINITION WITH AIRFLOW 3.0 FEATURES ==========
 @dag(
     dag_id="uber-eats-inv-extractor-v2",
-    schedule=[minio_invoice_asset],  # Asset-based scheduling - triggers when new files arrive
+    schedule=[minio_invoice_asset],
     start_date=datetime.now() - timedelta(days=1),
     catchup=False,
-    max_active_runs=1,  # Prevent overlapping runs
+    max_active_runs=1,
     tags=["invoices", "minio", "llm", "postgres", "airflow3", "asset-driven"],
     doc_md="""
     # UberEats Invoice Extractor V2 (Airflow 3.0 Optimized)
@@ -86,11 +77,9 @@ def batch_items(items: List[Any], batch_size: int) -> List[List[Any]]:
         'retry_exponential_backoff': True,
         'max_retry_delay': timedelta(minutes=5),
     }
-    # Note: outlets parameter not supported in this version
 )
 def invoice_extraction_pipeline_v2():
     
-    # ========== TASK GROUP: FILE DISCOVERY ==========
     @task_group(group_id="file_discovery")
     def discover_files():
         """Group for file discovery and validation tasks."""
@@ -101,17 +90,14 @@ def invoice_extraction_pipeline_v2():
             
             try:
                 with get_minio_client() as client:
-                    # Check bucket exists
                     if not client.bucket_exists(bucket):
                         raise ValueError(f"Bucket '{bucket}' does not exist")
                     
-                    # List objects with size filtering
                     objects = client.list_objects(bucket, prefix=prefix, recursive=True)
                     pdf_files = []
                     
                     for obj in objects:
                         if obj.object_name.endswith(".pdf"):
-                            # Skip very large files (>10MB) for safety
                             if obj.size > 10 * 1024 * 1024:
                                 logger.warning(f"Skipping large file {obj.object_name} ({obj.size} bytes)")
                                 continue
@@ -129,7 +115,6 @@ def invoice_extraction_pipeline_v2():
                     total_size = sum(f['size'] for f in pdf_files)
                     logger.info(f"Found {len(pdf_files)} PDFs, total size: {total_size:,} bytes")
                     
-                    # Emit metrics
                     from airflow.stats import Stats
                     Stats.gauge('invoice_extractor.files_found', len(pdf_files))
                     
@@ -152,10 +137,7 @@ def invoice_extraction_pipeline_v2():
             
             files = file_info['files']
             
-            # Sort by size for better load balancing
             files_sorted = sorted(files, key=lambda x: x['size'])
-            
-            # Create balanced batches
             batches = batch_items(files_sorted, batch_size)
             
             logger.info(f"Created {len(batches)} batches for processing")
@@ -165,12 +147,11 @@ def invoice_extraction_pipeline_v2():
         batches = create_processing_batches(file_info)
         return batches
     
-    # ========== TASK GROUP: PDF PROCESSING ==========
     @task_group(group_id="pdf_processing")
     def process_pdfs(batches):
         """Group for PDF download and text extraction."""
         
-        @task(max_active_tis_per_dagrun=3)  # Limit concurrent downloads
+        @task(max_active_tis_per_dagrun=3)
         def download_and_extract_batch(batch: List[Dict], bucket: str = "invoices") -> List[Dict]:
             """Download and extract text from a batch of PDFs."""
             results = []
@@ -180,13 +161,11 @@ def invoice_extraction_pipeline_v2():
                     try:
                         key = file_info['key']
                         
-                        # Download PDF
                         response = client.get_object(bucket, key)
                         pdf_bytes = response.read()
                         response.close()
                         response.release_conn()
                         
-                        # Extract text with improved error handling
                         pdf_file = BytesIO(pdf_bytes)
                         pdf_reader = PyPDF2.PdfReader(pdf_file)
                         
@@ -228,24 +207,21 @@ def invoice_extraction_pipeline_v2():
             
             return results
         
-        # Process batches in parallel
         extracted_batches = download_and_extract_batch.expand(batch=batches)
         return extracted_batches
     
-    # ========== TASK GROUP: LLM EXTRACTION ==========
     @task_group(group_id="llm_extraction")
     def extract_with_llm(pdf_batches):
         """Group for LLM-based data extraction with batch optimization."""
         
-        @task(max_active_tis_per_dagrun=2)  # Limit concurrent LLM calls
+        @task(max_active_tis_per_dagrun=2)
         def extract_invoice_batch_with_llm(pdf_batch: List[Dict]) -> List[Dict]:
             """Extract structured data from multiple invoices using LLM."""
             from openai import OpenAI
             
-            # Filter out failed PDFs
             valid_pdfs = [p for p in pdf_batch if p.get('status') == 'success']
             if not valid_pdfs:
-                return pdf_batch  # Return as-is if no valid PDFs
+                return pdf_batch
             
             try:
                 conn = BaseHook.get_connection("openai_default")
@@ -253,15 +229,12 @@ def invoice_extraction_pipeline_v2():
                 
                 results = []
                 
-                # Process in smaller sub-batches for LLM (max 2 at a time for better accuracy)
                 for pdf_data in valid_pdfs:
                     try:
-                        # Prepare optimized prompt
                         system_prompt = """You are an expert at extracting data from UberEats invoices.
                         Extract information and return ONLY valid JSON without markdown formatting.
                         Be precise with monetary values and dates."""
                         
-                        # Truncate text if too long
                         invoice_text = pdf_data['text'][:3500]
                         
                         user_prompt = f"""
@@ -293,7 +266,6 @@ def invoice_extraction_pipeline_v2():
                         IMPORTANT: Use numbers for monetary values, not strings.
                         """
                         
-                        # Call OpenAI with structured output
                         response = client.chat.completions.create(
                             model="gpt-4o-mini",
                             messages=[
@@ -302,18 +274,15 @@ def invoice_extraction_pipeline_v2():
                             ],
                             temperature=0.1,
                             max_tokens=1500,
-                            response_format={"type": "json_object"}  # Force JSON response
+                            response_format={"type": "json_object"}
                         )
                         
-                        # Parse response
                         invoice_data = json.loads(response.choices[0].message.content)
                         
-                        # Add metadata
                         invoice_data['file_key'] = pdf_data['file_key']
                         invoice_data['processed_at'] = datetime.now().isoformat()
                         invoice_data['extraction_status'] = 'success'
                         
-                        # Validate and clean numeric fields
                         numeric_fields = ['subtotal', 'taxa_entrega', 'taxa_servico', 'gorjeta', 'total']
                         for field in numeric_fields:
                             if field in invoice_data:
@@ -322,7 +291,6 @@ def invoice_extraction_pipeline_v2():
                                 except (TypeError, ValueError):
                                     invoice_data[field] = 0.0
                         
-                        # Process items
                         if 'itens' in invoice_data and invoice_data['itens']:
                             for item in invoice_data['itens']:
                                 item['preco_unitario'] = float(item.get('preco_unitario', 0))
@@ -340,7 +308,6 @@ def invoice_extraction_pipeline_v2():
                             'error': str(e)
                         })
                 
-                # Add failed PDFs to results
                 failed_pdfs = [p for p in pdf_batch if p.get('status') != 'success']
                 for failed in failed_pdfs:
                     results.append({
@@ -349,7 +316,6 @@ def invoice_extraction_pipeline_v2():
                         'error': failed.get('error', 'PDF processing failed')
                     })
                 
-                # Emit metrics
                 from airflow.stats import Stats
                 Stats.incr('invoice_extractor.llm_extractions', len(valid_pdfs))
                 
@@ -357,18 +323,15 @@ def invoice_extraction_pipeline_v2():
                 
             except Exception as e:
                 logger.error(f"Batch LLM extraction failed: {str(e)}")
-                # Return all as failed
                 return [{
                     'file_key': p.get('file_key'),
                     'extraction_status': 'failed',
                     'error': str(e)
                 } for p in pdf_batch]
         
-        # Process each batch
         extracted_data = extract_invoice_batch_with_llm.expand(pdf_batch=pdf_batches)
         return extracted_data
     
-    # ========== TASK GROUP: DATABASE OPERATIONS ==========
     @task_group(group_id="database_operations")
     def store_to_database(invoice_batches):
         """Group for database operations with batch optimization."""
@@ -381,7 +344,6 @@ def invoice_extraction_pipeline_v2():
                 
                 with pg_hook.get_conn() as conn:
                     with conn.cursor() as cursor:
-                        # Create schema and table with additional indexes
                         cursor.execute("""
                             CREATE SCHEMA IF NOT EXISTS invoices;
                             
@@ -409,13 +371,11 @@ def invoice_extraction_pipeline_v2():
                                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                             );
                             
-                            -- Performance indexes
                             CREATE INDEX IF NOT EXISTS idx_order_datetime ON invoices.invoices(order_datetime);
                             CREATE INDEX IF NOT EXISTS idx_restaurant ON invoices.invoices(restaurant);
                             CREATE INDEX IF NOT EXISTS idx_file_key ON invoices.invoices(file_key);
                             CREATE INDEX IF NOT EXISTS idx_created_at ON invoices.invoices(created_at);
                             
-                            -- GIN index for JSONB columns for faster queries
                             CREATE INDEX IF NOT EXISTS idx_items_gin ON invoices.invoices USING GIN(items);
                             CREATE INDEX IF NOT EXISTS idx_raw_data_gin ON invoices.invoices USING GIN(raw_data);
                         """)
@@ -434,7 +394,6 @@ def invoice_extraction_pipeline_v2():
             if not schema_ready:
                 raise ValueError("Database schema not ready")
             
-            # Filter successful extractions
             valid_invoices = [inv for inv in invoice_batch 
                             if inv.get('extraction_status') == 'success']
             
@@ -451,12 +410,10 @@ def invoice_extraction_pipeline_v2():
             inserted = []
             failed = []
             
-            # Use transaction for batch insert
             with pg_hook.get_conn() as conn:
                 with conn.cursor() as cursor:
                     for invoice in valid_invoices:
                         try:
-                            # Parse datetime
                             order_datetime = invoice.get('data_hora')
                             if isinstance(order_datetime, str):
                                 try:
@@ -466,10 +423,8 @@ def invoice_extraction_pipeline_v2():
                                 except:
                                     order_datetime = None
                             
-                            # Prepare items JSON
                             items_json = json.dumps(invoice.get('itens', []))
                             
-                            # Insert with UPSERT
                             cursor.execute("""
                                 INSERT INTO invoices.invoices (
                                     order_id, restaurant, cnpj, address, order_datetime,
@@ -518,12 +473,8 @@ def invoice_extraction_pipeline_v2():
                                 'file_key': invoice.get('file_key'),
                                 'error': str(e)
                             })
-                            # Continue with other invoices
-                    
-                    # Commit transaction
                     conn.commit()
             
-            # Emit metrics
             from airflow.stats import Stats
             Stats.incr('invoice_extractor.invoices_inserted', len(inserted))
             Stats.incr('invoice_extractor.invoices_failed', len(failed))
@@ -537,17 +488,13 @@ def invoice_extraction_pipeline_v2():
                 'total_processed': len(valid_invoices)
             }
         
-        # Ensure schema exists first
         schema_ready = ensure_database_schema()
-        
-        # Batch insert with schema dependency
         results = batch_insert_invoices.partial(schema_ready=schema_ready).expand(
             invoice_batch=invoice_batches
         )
         
         return results
     
-    # ========== TASK GROUP: FILE MANAGEMENT ==========
     @task_group(group_id="file_management")
     def manage_processed_files(db_results):
         """Group for managing processed files."""
@@ -569,7 +516,6 @@ def invoice_extraction_pipeline_v2():
                             if not file_key:
                                 continue
                             
-                            # Tag file as processed instead of moving
                             tags = {
                                 'processed': 'true',
                                 'processed_at': datetime.now().isoformat(),
@@ -577,7 +523,6 @@ def invoice_extraction_pipeline_v2():
                                 'order_id': invoice.get('order_id', '')
                             }
                             
-                            # Set object tags
                             client.set_object_tags(
                                 "invoices",
                                 file_key,
@@ -600,7 +545,6 @@ def invoice_extraction_pipeline_v2():
         archived = archive_processed_files(db_results)
         return archived
     
-    # ========== REPORTING TASK ==========
     @task()
     def generate_comprehensive_report(
         batches: List[List[Dict]],
@@ -609,12 +553,10 @@ def invoice_extraction_pipeline_v2():
     ) -> str:
         """Generate comprehensive processing report with metrics."""
         
-        # Calculate statistics
         total_files = sum(len(batch) for batch in batches)
         total_inserted = sum(len(r.get('inserted', [])) for r in db_results)
         total_failed = sum(len(r.get('failed', [])) for r in db_results)
         
-        # Build detailed report
         report = f"""
         ╔══════════════════════════════════════════════════════════╗
         ║     📊 Invoice Processing Report - V2 (Airflow 3.0)      ║
@@ -647,7 +589,6 @@ def invoice_extraction_pipeline_v2():
         
         logger.info(report)
         
-        # Emit final metrics
         from airflow.stats import Stats
         Stats.gauge('invoice_extractor.v2.total_processed', total_inserted)
         Stats.gauge('invoice_extractor.v2.success_rate', 
@@ -655,33 +596,16 @@ def invoice_extraction_pipeline_v2():
         
         return report
     
-    # ========== DAG ORCHESTRATION WITH TASK GROUPS ==========
-    
-    # 1. Discover and batch files
     file_batches = discover_files()
-    
-    # 2. Process PDFs in batches
     pdf_data = process_pdfs(file_batches)
-    
-    # 3. Extract data using LLM
     extracted_data = extract_with_llm(pdf_data)
-    
-    # 4. Store to database
     db_results = store_to_database(extracted_data)
-    
-    # 5. Archive processed files
     archive_result = manage_processed_files(db_results)
-    
-    # 6. Generate final report
     report = generate_comprehensive_report(
         file_batches,
         db_results,
         archive_result
     )
-    
-    # Task dependencies are already defined through function calls
-    # The >> operator is not needed with TaskFlow API expand pattern
 
 
-# Instantiate the DAG
 dag = invoice_extraction_pipeline_v2()
