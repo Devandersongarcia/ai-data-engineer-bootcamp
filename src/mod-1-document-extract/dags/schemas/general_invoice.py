@@ -1,4 +1,3 @@
-# schemas/general_invoice.py
 from datetime import datetime, date
 from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, Field, validator
@@ -110,37 +109,29 @@ class DeliveryInfo(BaseModel):
 
 class GeneralInvoice(BaseModel):
     """Main schema for general invoice data"""
-    # Document identification
     invoice_number: Optional[str] = None
     invoice_type: Optional[InvoiceType] = InvoiceType.STANDARD
     invoice_date: Optional[date] = None
     due_date: Optional[date] = None
     issue_date: Optional[date] = None
-    
-    # Business entities
+
     vendor: Optional[Entity] = None
     customer: Optional[Entity] = None
-    
-    # Line items
+
     line_items: List[LineItem] = Field(default_factory=list)
-    
-    # Financial summary
+
     payment_summary: Optional[PaymentSummary] = None
-    
-    # Payment information
+
     payment_details: Optional[PaymentDetails] = None
-    
-    # Delivery information (for delivery services)
+
     delivery_info: Optional[DeliveryInfo] = None
-    
-    # Additional fields
+
     purchase_order_number: Optional[str] = None
     project_code: Optional[str] = None
     department: Optional[str] = None
     description: Optional[str] = None
     notes: Optional[str] = None
-    
-    # Metadata
+
     extraction_confidence: Optional[float] = Field(default=0.0, ge=0.0, le=1.0)
     extracted_at: datetime = Field(default_factory=datetime.utcnow)
     source_file: Optional[str] = None
@@ -172,8 +163,7 @@ class GeneralInvoice(BaseModel):
     def to_flat_dict(self) -> Dict[str, Any]:
         """Convert to flat dictionary for database insertion"""
         result = {}
-        
-        # Basic fields
+
         result['invoice_number'] = self.invoice_number
         result['invoice_type'] = self.invoice_type.value if self.invoice_type else None
         result['invoice_date'] = self.invoice_date
@@ -184,8 +174,7 @@ class GeneralInvoice(BaseModel):
         result['department'] = self.department
         result['description'] = self.description
         result['notes'] = self.notes
-        
-        # Vendor information
+
         if self.vendor:
             result['vendor_name'] = self.vendor.name
             if self.vendor.address:
@@ -199,8 +188,7 @@ class GeneralInvoice(BaseModel):
                 result['vendor_email'] = self.vendor.contact.email
             if self.vendor.tax_info:
                 result['vendor_tax_id'] = self.vendor.tax_info.tax_id
-        
-        # Customer information
+
         if self.customer:
             result['customer_name'] = self.customer.name
             if self.customer.address:
@@ -214,8 +202,7 @@ class GeneralInvoice(BaseModel):
                 result['customer_email'] = self.customer.contact.email
             if self.customer.tax_info:
                 result['customer_tax_id'] = self.customer.tax_info.tax_id
-        
-        # Payment summary
+
         if self.payment_summary:
             result['subtotal_amount'] = self.payment_summary.subtotal
             result['tax_amount'] = self.payment_summary.tax_amount
@@ -225,13 +212,11 @@ class GeneralInvoice(BaseModel):
             result['amount_paid'] = self.payment_summary.amount_paid
             result['amount_due'] = self.payment_summary.amount_due
             result['currency'] = self.payment_summary.currency.value if self.payment_summary.currency else None
-        
-        # Payment details
+
         if self.payment_details:
             result['payment_method'] = self.payment_details.method.value if self.payment_details.method else None
             result['payment_terms'] = self.payment_details.terms
-        
-        # Metadata
+
         result['extraction_confidence'] = self.extraction_confidence
         result['extracted_at'] = self.extracted_at
         result['source_file'] = self.source_file

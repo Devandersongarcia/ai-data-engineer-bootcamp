@@ -354,7 +354,7 @@ def invoice_extraction_pipeline():
         skipped = [r for r in results if r.get('status') == 'skipped']
 
         summary = f"""
-        📊 Invoice Processing Complete:
+        Invoice Processing Complete:
         ✅ Successful: {len(successful)}
         ❌ Failed: {len(failed)}
         ⏭️ Skipped: {len(skipped)}

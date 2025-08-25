@@ -1,4 +1,3 @@
-# schemas/uber_eats_invoice.py
 from datetime import datetime
 from typing import List, Optional
 from pydantic import BaseModel, Field
@@ -74,27 +73,21 @@ class PaymentDetails(BaseModel):
 
 class UberEatsInvoice(BaseModel):
     """Main schema for Uber Eats invoice"""
-    # Order identification
+
     order_number: str
     order_id: str
     order_datetime: datetime
-    
-    # Restaurant information
+
     restaurant: Restaurant
-    
-    # Order items
+
     items: List[OrderItem]
-    
-    # Payment summary
+
     payment_summary: PaymentSummary
-    
-    # Delivery details
+
     delivery: DeliveryDetails
-    
-    # Payment method
+
     payment_details: PaymentDetails
-    
-    # Metadata
+
     rating_code: Optional[str] = None
     extracted_at: datetime = Field(default_factory=datetime.utcnow)
     source_file: Optional[str] = None

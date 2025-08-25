@@ -59,7 +59,7 @@ PostgreSQL Storage → Comprehensive Indexing → Conflict Resolution
 - Implements comprehensive indexing for optimal query performance
 - Handles duplicate processing with intelligent conflict resolution
 
-### 6. **📊 Monitoring & Reporting**
+### 6. **⚡ Monitoring & Reporting**
 ```
 Execution Metrics → Success Tracking → Performance Analysis
 ```
@@ -95,19 +95,17 @@ The pipeline creates a comprehensive PostgreSQL table optimized for invoice data
 
 ```sql
 CREATE TABLE ubears_invoices_extract_airflow (
-    -- Primary identification
+    
     id SERIAL PRIMARY KEY,
     filename VARCHAR(255) NOT NULL,
     object_name VARCHAR(500) NOT NULL,
     
-    -- Invoice core data
     invoice_number VARCHAR(100),
     invoice_type VARCHAR(50) DEFAULT 'standard',
     invoice_date DATE,
     due_date DATE,
     issue_date DATE,
     
-    -- Vendor information
     vendor_name VARCHAR(255),
     vendor_address TEXT,
     vendor_city VARCHAR(100),
@@ -118,7 +116,6 @@ CREATE TABLE ubears_invoices_extract_airflow (
     vendor_email VARCHAR(255),
     vendor_tax_id VARCHAR(50),
     
-    -- Customer information
     customer_name VARCHAR(255),
     customer_address TEXT,
     customer_city VARCHAR(100),
@@ -129,7 +126,6 @@ CREATE TABLE ubears_invoices_extract_airflow (
     customer_email VARCHAR(255),
     customer_tax_id VARCHAR(50),
     
-    -- Financial data
     subtotal_amount DECIMAL(15, 2),
     tax_amount DECIMAL(15, 2),
     discount_amount DECIMAL(15, 2),
@@ -140,7 +136,6 @@ CREATE TABLE ubears_invoices_extract_airflow (
     tip_amount DECIMAL(15, 2),
     currency VARCHAR(10),
     
-    -- Payment & business data
     payment_method VARCHAR(100),
     payment_terms VARCHAR(255),
     purchase_order_number VARCHAR(100),
@@ -149,12 +144,10 @@ CREATE TABLE ubears_invoices_extract_airflow (
     project_code VARCHAR(100),
     department VARCHAR(100),
     
-    -- Structured data (JSONB)
     line_items JSONB,
     delivery_info JSONB,
     raw_extracted_data JSONB,
     
-    -- Quality & metadata
     extraction_confidence DECIMAL(3, 2),
     extracted_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -166,13 +159,11 @@ CREATE TABLE ubears_invoices_extract_airflow (
 
 ### **🔍 Comprehensive Indexing**
 ```sql
--- Performance-optimized indexes
 CREATE INDEX idx_ubears_invoices_extract_airflow_filename ON ubears_invoices_extract_airflow(filename);
 CREATE INDEX idx_ubears_invoices_extract_airflow_vendor ON ubears_invoices_extract_airflow(vendor_name);
 CREATE INDEX idx_ubears_invoices_extract_airflow_date ON ubears_invoices_extract_airflow(invoice_date);
 CREATE INDEX idx_ubears_invoices_extract_airflow_total ON ubears_invoices_extract_airflow(total_amount);
 
--- JSONB indexes for complex queries
 CREATE INDEX idx_ubears_invoices_extract_airflow_line_items_gin ON ubears_invoices_extract_airflow USING GIN (line_items);
 CREATE INDEX idx_ubears_invoices_extract_airflow_delivery_info_gin ON ubears_invoices_extract_airflow USING GIN (delivery_info);
 ```
@@ -182,13 +173,11 @@ CREATE INDEX idx_ubears_invoices_extract_airflow_delivery_info_gin ON ubears_inv
 ### **📋 Required Environment Variables**
 
 ```bash
-# MinIO Object Storage Configuration
 MINIO_ENDPOINT=your-minio-server.com
 MINIO_ACCESS_KEY=your-minio-access-key
 MINIO_SECRET_KEY=your-minio-secret-key
-MINIO_SECURE=true  # Use HTTPS
+MINIO_SECURE=true
 
-# OpenAI API Configuration
 OPENAI_API_KEY=sk-your-openai-api-key
 ```
 
@@ -196,25 +185,19 @@ OPENAI_API_KEY=sk-your-openai-api-key
 
 Key packages in `requirements.txt`:
 ```txt
-# Core Airflow
 apache-airflow>=2.7.0
 
-# LangChain ecosystem
 langchain==0.3.7
 langchain-community==0.3.5
 langchain-openai==0.2.5
 
-# Document processing
 pypdf==4.3.1
 
-# Data storage & processing
 minio==7.2.7
 psycopg2-binary==2.9.9
 
-# Data validation & modeling
 pydantic>=2.11.0
 
-# Async processing
 asyncio
 ```
 
@@ -222,14 +205,11 @@ asyncio
 
 ### **1. Environment Setup**
 ```bash
-# Clone the repository
 git clone your-repo-url
 cd airflow-local
 
-# Install dependencies
 pip install -r requirements.txt
 
-# Configure environment variables
 export OPENAI_API_KEY="sk-your-key-here"
 export MINIO_ENDPOINT="your-minio-endpoint"
 export MINIO_ACCESS_KEY="your-access-key"
@@ -238,33 +218,17 @@ export MINIO_SECRET_KEY="your-secret-key"
 
 ### **2. Deploy to Airflow**
 ```bash
-# Copy DAG to Airflow dags directory
 cp dags/extract_invoices_intelligence_lang.py /path/to/airflow/dags/
-
-# Copy schema files
 cp -r dags/schemas/ /path/to/airflow/dags/schemas/
 ```
 
 ### **3. Prepare Invoice Data**
 ```bash
-# Upload invoices to MinIO bucket
-# Bucket: landing-zone
-# Prefix: invoices/
-# Format: PDF files only
 ```
 
 ### **4. Execute Pipeline**
 ```bash
-# Start Airflow (using Astronomer CLI)
 astro dev start
-
-# Access Airflow UI
-# URL: http://localhost:8080
-# Username: admin
-# Password: admin
-
-# Trigger the DAG
-# DAG ID: extract_invoices_intelligence_lang
 ```
 
 ## 📈 Performance Metrics & Optimization
@@ -298,7 +262,6 @@ astro dev start
 
 ### **🗃️ Database Query Examples**
 ```sql
--- Check extraction success rates
 SELECT 
     processing_status,
     COUNT(*) as count,
@@ -306,7 +269,6 @@ SELECT
 FROM ubears_invoices_extract_airflow 
 GROUP BY processing_status;
 
--- View recent high-confidence extractions
 SELECT 
     filename,
     vendor_name,
@@ -319,7 +281,6 @@ WHERE extraction_confidence > 0.8
 ORDER BY extracted_at DESC 
 LIMIT 10;
 
--- Analyze extraction performance by file size
 SELECT 
     CASE 
         WHEN page_count <= 2 THEN 'Small (1-2 pages)'
@@ -333,7 +294,6 @@ FROM ubears_invoices_extract_airflow
 GROUP BY 1
 ORDER BY 1;
 
--- Find most common vendors
 SELECT 
     vendor_name,
     COUNT(*) as invoice_count,
@@ -366,7 +326,6 @@ LIMIT 10;
 
 ### **📝 Error Logging Strategy**
 ```python
-# Error tracking includes:
 {
     "error_type": "validation_error|processing_error|api_error",
     "filename": "invoice.pdf",
@@ -404,11 +363,11 @@ LIMIT 10;
 ### **🏗️ Code Structure**
 ```
 dags/
-├── extract_invoices_intelligence_lang.py  # Main DAG definition
+├── extract_invoices_intelligence_lang.py
 ├── schemas/
-│   ├── general_invoice.py                 # Pydantic schema definitions
+│   ├── general_invoice.py               
 │   └── __init__.py
-└── README_LANGCHAIN_INVOICE_EXTRACTION.md # This documentation
+└── README_LANGCHAIN_INVOICE_EXTRACTION.md
 ```
 
 ### **🔧 Key Classes & Functions**
@@ -428,17 +387,13 @@ The system supports complex invoice structures through nested Pydantic models:
 
 ### **🔧 Development Setup**
 ```bash
-# Install development dependencies
 pip install -r requirements-dev.txt
 
-# Run tests
 pytest tests/
 
-# Code formatting
 black dags/
 isort dags/
 
-# Type checking
 mypy dags/
 ```
 
