@@ -1,0 +1,200 @@
+{
+  "status": "completed",
+  "execution_time_seconds": 605.117848,
+  "documents": {
+    "total": 2,
+    "successful": 2,
+    "failed": 0
+  },
+  "pipeline_stats": {
+    "start_time": "2025-08-26 22:13:39.051459",
+    "end_time": "2025-08-26 22:23:44.169307",
+    "documents_processed": 2,
+    "documents_failed": 0,
+    "total_chunks": 2162,
+    "total_embeddings": 43,
+    "pipeline_errors": []
+  },
+  "embedding_stats": {
+    "total_embeddings": 2162,
+    "cache_hits": 0,
+    "cache_misses": 2162,
+    "api_calls": 25,
+    "total_tokens": 86813,
+    "cache_hit_ratio": 0.0,
+    "estimated_cost_usd": 1.7362600000000001
+  },
+  "vector_store_stats": {
+    "pinecone": {
+      "total_ingested": 43,
+      "failed_ingestions": 0,
+      "total_batches": 4,
+      "indexes": {
+        "module-summaries": {
+          "total_vectors": 4,
+          "dimension": 3072,
+          "namespaces": {
+            "mod-mod-6": "{'vector_count': 4}"
+          }
+        },
+        "detailed-chunks": {
+          "total_vectors": 882,
+          "dimension": 3072,
+          "namespaces": {
+            "mod-mod-6": "{'vector_count': 882}"
+          }
+        }
+      }
+    },
+    "qdrant": {
+      "total_ingested": 43,
+      "failed_ingestions": 0,
+      "total_batches": 2,
+      "collection": {
+        "vectors_count": null,
+        "points_count": 925,
+        "segments_count": 4,
+        "status": "green",
+        "config": {
+          "vector_size": 3072,
+          "distance": "Cosine",
+          "shard_number": 2
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "document_id": "mod-6-al-4.docx",
+      "status": "completed",
+      "stages": {
+        "preprocessing": {
+          "status": "completed",
+          "reduction_pct": 20.66
+        },
+        "enrichment": {
+          "status": "completed",
+          "metadata_keys": [
+            "created",
+            "modified",
+            "author",
+            "title",
+            "subject",
+            "keywords",
+            "category",
+            "content_hash",
+            "filename",
+            "module",
+            "module_number",
+            "document_type",
+            "paragraph_count",
+            "table_count",
+            "processing_timestamp",
+            "source",
+            "preprocessing",
+            "title_metadata",
+            "enrichment_timestamp"
+          ]
+        },
+        "chunking": {
+          "status": "completed",
+          "total_chunks": 1226,
+          "chunk_types": {
+            "semantic": 582,
+            "retrieval": 39,
+            "synthesis": 20,
+            "hierarchical": 585
+          }
+        },
+        "embedding": {
+          "status": "completed",
+          "total_embeddings": 1226,
+          "valid_embeddings": 22,
+          "cache_hit_ratio": 0
+        },
+        "ingestion": {
+          "status": "completed",
+          "results": {
+            "pinecone": {
+              "successful": 22,
+              "failed": 0
+            },
+            "qdrant": {
+              "successful": 22,
+              "failed": 0
+            },
+            "strategy": "both",
+            "total_chunks": 22
+          }
+        }
+      },
+      "errors": []
+    },
+    {
+      "document_id": "mod-6-al-5.docx",
+      "status": "completed",
+      "stages": {
+        "preprocessing": {
+          "status": "completed",
+          "reduction_pct": 22.02
+        },
+        "enrichment": {
+          "status": "completed",
+          "metadata_keys": [
+            "created",
+            "modified",
+            "author",
+            "title",
+            "subject",
+            "keywords",
+            "category",
+            "content_hash",
+            "filename",
+            "module",
+            "module_number",
+            "document_type",
+            "paragraph_count",
+            "table_count",
+            "processing_timestamp",
+            "source",
+            "preprocessing",
+            "title_metadata",
+            "enrichment_timestamp"
+          ]
+        },
+        "chunking": {
+          "status": "completed",
+          "total_chunks": 936,
+          "chunk_types": {
+            "semantic": 438,
+            "retrieval": 38,
+            "synthesis": 19,
+            "hierarchical": 441
+          }
+        },
+        "embedding": {
+          "status": "completed",
+          "total_embeddings": 936,
+          "valid_embeddings": 21,
+          "cache_hit_ratio": 0
+        },
+        "ingestion": {
+          "status": "completed",
+          "results": {
+            "pinecone": {
+              "successful": 21,
+              "failed": 0
+            },
+            "qdrant": {
+              "successful": 21,
+              "failed": 0
+            },
+            "strategy": "both",
+            "total_chunks": 21
+          }
+        }
+      },
+      "errors": []
+    }
+  ]
+}

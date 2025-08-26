@@ -9,6 +9,7 @@ from typing import List, Dict, Any, Optional, Tuple
 from dataclasses import dataclass
 import hashlib
 from enum import Enum
+from datetime import datetime
 
 from llama_index.core import Document
 from llama_index.core.node_parser import (
@@ -850,7 +851,7 @@ class SmartChunkingPipeline:
                     len(result['synthesis_chunks'])
                 ),
                 'document_id': document.metadata.get('filename', 'unknown'),
-                'chunking_timestamp': logger.time()
+                'chunking_timestamp': datetime.utcnow().isoformat()
             }
             
             logger.info(f"Successfully chunked document with {result['metadata']['total_chunks']} total chunks")
