@@ -206,7 +206,7 @@ Set up required connections in Airflow UI:
 - `openai_default`: OpenAI API
 - `invoice_db`: PostgreSQL
 
-## 📈 Learning Path
+## Learning Path
 
 ### Recommended Progression
 

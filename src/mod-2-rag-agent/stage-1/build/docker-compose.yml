@@ -1,0 +1,36 @@
+services:
+  langflow:
+    # image: langflowai/langflow:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "7860:7860"
+    environment:
+      - LANGFLOW_DATABASE_URL=sqlite:////app/data/langflow.db
+      - LANGFLOW_CONFIG_DIR=/app/data
+      - LANGFLOW_LOG_LEVEL=info
+      - LANGFUSE_PUBLIC_KEY=pk-lf-98760dc7-76d9-4fc0-81be-d87e8c915e03
+      - LANGFUSE_SECRET_KEY=sk-lf-9503bcfa-85e2-4901-8f2b-bc4976c373f4
+      - LANGFUSE_HOST=https://us.cloud.langfuse.com
+      - LANGFLOW_SECRET_KEY=81wmNAy-ufpwO2-UlgAM0kMifdg5wPjp_wCw5CQNjAg=
+    volumes:
+      - ./data:/app/data
+    command: langflow run --host 0.0.0.0 --port 7860
+    restart: unless-stopped
+
+  # PostgreSQL for production use
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: langflow
+      POSTGRES_PASSWORD: langflow
+      POSTGRES_DB: langflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

@@ -1,0 +1,143 @@
+{
+  "name": "lang-flow-rag-phase-1-qdrant",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start execution",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -80,
+        -544
+      ],
+      "id": "9eea8427-74a4-42ce-a817-d44acd4049f0",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "deleteCollection",
+        "collectionName": {
+          "__rl": true,
+          "value": "col-lf-rag-split-text",
+          "mode": "list",
+          "cachedResultName": "col-lf-rag-split-text"
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-qdrant.qdrant",
+      "typeVersion": 1,
+      "position": [
+        176,
+        -464
+      ],
+      "id": "750c5c54-81f7-4a47-a917-9182f5124a9e",
+      "name": "Delete collection col-lf-rag-split-text",
+      "credentials": {
+        "qdrantRestApi": {
+          "id": "kaKYtYd85mBK2G4D",
+          "name": "api-key-owshq-qdrant-dev"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "listCollections",
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-qdrant.qdrant",
+      "typeVersion": 1,
+      "position": [
+        656,
+        -544
+      ],
+      "id": "8caeb4be-fdc2-4d9e-8340-c17a5858ba24",
+      "name": "List available collections",
+      "credentials": {
+        "qdrantRestApi": {
+          "id": "kaKYtYd85mBK2G4D",
+          "name": "api-key-owshq-qdrant-dev"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://langflowailangflowlatest-production-7d7a.up.railway.app/api/v1/run/29fc0480-15a4-4469-8d0f-c90c4321021d",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-api-key",
+              "value": "sk-OhUidxFLRHSbNiJ5Vf097p6wzlAGdGjTMae91p1pKrs"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "name": "Execute gip-phase-1-rag-split-text",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        400,
+        -512
+      ],
+      "id": "f50b1dc2-c7f9-47bb-ab57-83c32cce5367",
+      "typeVersion": 4.2
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Start execution": {
+      "main": [
+        [
+          {
+            "node": "Delete collection col-lf-rag-split-text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete collection col-lf-rag-split-text": {
+      "main": [
+        [
+          {
+            "node": "Execute gip-phase-1-rag-split-text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute gip-phase-1-rag-split-text": {
+      "main": [
+        [
+          {
+            "node": "List available collections",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3494a135-63e0-4134-b8ed-992fe9147017",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ee1f22daa8c12c1e5513be63d0355a90e4975179dd1d449c8a2bfbea9b794b22"
+  },
+  "id": "TWcJ3fCoZV6aMUad",
+  "tags": []
+}
