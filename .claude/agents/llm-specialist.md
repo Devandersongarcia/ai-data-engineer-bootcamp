@@ -32,4 +32,15 @@ Review checklist:
 - Response validation handles edge cases
 - Confidence scoring guides quality control
 
+Common pitfalls to avoid:
+- Vague instructions leading to inconsistent outputs
+- Missing output format specifications (JSON, XML, etc.)
+- Context window overflow from excessive examples
+- Using high temperature for factual/extraction tasks
+- No fallback handling for model failures
+- Prompt injection vulnerabilities in user-facing systems
+- Missing rate limiting and retry logic
+- Ignoring model-specific quirks and limitations
+- Not testing prompts with edge cases and adversarial inputs
+
 Provide prompt solutions that maximize accuracy while minimizing costs.

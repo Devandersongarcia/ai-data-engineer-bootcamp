@@ -57,29 +57,27 @@ class ProcessedInvoice(TypedDict):
 
 @lru_cache(maxsize=1)
 def get_minio_config() -> Dict[str, Any]:
-    """
-    Retrieve and cache MinIO configuration from Airflow connection.
+    """Retrieve and cache MinIO configuration from Airflow connection.
     
     Returns:
-        Dictionary containing MinIO connection parameters.
+        Dictionary containing MinIO connection parameters
     """
     conn = BaseHook.get_connection("minio_default")
     extra = json.loads(conn.extra) if conn.extra else {}
     return {
-        'endpoint': extra.get('endpoint', 'bucket-production-3aaf.up.railway.app'),
-        'access_key': extra.get('access_key', 'dET09OhQHkq7HUaJHJm6KexgkXlkd0gN'),
-        'secret_key': extra.get('secret_key', 'rKldd7Fpfroi7LlcCrQIvbrHA7ztZPIYl3V53ea70hQvYF2l'),
+        'endpoint': extra.get('endpoint', 'localhost:9000'),
+        'access_key': extra.get('access_key', conn.login),
+        'secret_key': extra.get('secret_key', conn.password),
         'secure': extra.get('secure', True)
     }
 
 
 @contextmanager
 def minio_client():
-    """
-    Context manager for MinIO client with automatic resource cleanup.
+    """Context manager for MinIO client with automatic cleanup.
     
     Yields:
-        Configured MinIO client instance.
+        Configured MinIO client instance
     """
     config = get_minio_config()
     client = Minio(**config)
@@ -137,15 +135,14 @@ def invoice_extraction_pipeline_v3():
         
         @task()
         def discover_pdf_files(bucket: str = "invoices", prefix: str = "incoming/") -> List[Dict[str, Any]]:
-            """
-            Discover and validate PDF files in MinIO bucket.
+            """Discover and validate PDF files in MinIO bucket.
             
             Args:
-                bucket: MinIO bucket name.
-                prefix: Object prefix for filtering.
+                bucket: MinIO bucket name
+                prefix: Object prefix for filtering
             
             Returns:
-                List of PDF file metadata dictionaries.
+                List of PDF file metadata dictionaries
             """
             with minio_client() as client:
                 if not client.bucket_exists(bucket):
@@ -170,29 +167,27 @@ def invoice_extraction_pipeline_v3():
         
         @task()
         def create_batches(pdf_files: List[Dict[str, Any]], batch_size: int = 5) -> List[List[Dict[str, Any]]]:
-            """
-            Create batches from PDF files for parallel processing.
+            """Create batches from PDF files for parallel processing.
             
             Args:
-                pdf_files: List of PDF file metadata.
-                batch_size: Number of files per batch.
+                pdf_files: List of PDF file metadata
+                batch_size: Number of files per batch
             
             Returns:
-                List of batches.
+                List of batches
             """
             return [pdf_files[i:i + batch_size] for i in range(0, len(pdf_files), batch_size)]
         
         @task()
         def extract_pdf_text(file_batch: List[Dict[str, Any]], bucket: str = "invoices") -> List[Dict[str, Any]]:
-            """
-            Extract text content from a batch of PDF files.
+            """Extract text content from a batch of PDF files.
             
             Args:
-                file_batch: Batch of file metadata dictionaries.
-                bucket: MinIO bucket name.
+                file_batch: Batch of file metadata dictionaries
+                bucket: MinIO bucket name
             
             Returns:
-                List of dictionaries containing extracted text and metadata.
+                List of dictionaries containing extracted text and metadata
             """
             results = []
             
@@ -271,14 +266,13 @@ def invoice_extraction_pipeline_v3():
     
     @task()
     def process_extraction_batch(pdf_batch: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """
-        Process a batch of PDFs through LLM extraction.
+        """Process a batch of PDFs through LLM extraction.
         
         Args:
-            pdf_batch: Batch of PDF text data.
+            pdf_batch: Batch of PDF text data
         
         Returns:
-            List of extracted invoice data dictionaries.
+            List of extracted invoice data dictionaries
         """
         results = []
         valid_pdfs = [p for p in pdf_batch if p.get('status') == 'success']
@@ -288,9 +282,11 @@ def invoice_extraction_pipeline_v3():
                 invoice_data = extract_invoice_with_llm(pdf_data['text'])
                 
                 result = asdict(invoice_data) if isinstance(invoice_data, InvoiceData) else invoice_data
-                result['file_key'] = pdf_data['file_key']
-                result['processed_at'] = datetime.now().isoformat()
-                result['extraction_status'] = 'success'
+                result.update({
+                    'file_key': pdf_data['file_key'],
+                    'processed_at': datetime.now().isoformat(),
+                    'extraction_status': 'success'
+                })
                 
                 results.append(result)
                 logger.info(f"Extracted invoice {result.get('order_id', 'UNKNOWN')}")
@@ -303,7 +299,9 @@ def invoice_extraction_pipeline_v3():
                     'error': str(e)
                 })
         
-        for failed_pdf in [p for p in pdf_batch if p.get('status') != 'success']:
+        # Handle failed PDFs
+        failed_pdfs = [p for p in pdf_batch if p.get('status') != 'success']
+        for failed_pdf in failed_pdfs:
             results.append({
                 'file_key': failed_pdf.get('file_key'),
                 'extraction_status': 'skipped',
@@ -321,11 +319,10 @@ def invoice_extraction_pipeline_v3():
         
         @task()
         def initialize_database() -> bool:
-            """
-            Initialize database schema with required tables and indexes.
+            """Initialize database schema with required tables and indexes.
             
             Returns:
-                Boolean indicating successful initialization.
+                Boolean indicating successful initialization
             """
             pg_hook = PostgresHook(postgres_conn_id="invoice_db")
             
@@ -370,15 +367,14 @@ def invoice_extraction_pipeline_v3():
         
         @task()
         def persist_invoices(invoice_batch: List[Dict[str, Any]], db_ready: bool) -> Dict[str, Any]:
-            """
-            Persist invoice batch to PostgreSQL with transaction safety.
+            """Persist invoice batch to PostgreSQL with transaction safety.
             
             Args:
-                invoice_batch: Batch of invoice data to persist.
-                db_ready: Database initialization status.
+                invoice_batch: Batch of invoice data to persist
+                db_ready: Database initialization status
             
             Returns:
-                Dictionary containing persistence results and statistics.
+                Dictionary containing persistence results and statistics
             """
             if not db_ready:
                 raise ValueError("Database not initialized")
@@ -400,6 +396,7 @@ def invoice_extraction_pipeline_v3():
                 with conn.cursor() as cursor:
                     for invoice in valid_invoices:
                         try:
+                            # Parse datetime
                             order_datetime = invoice.get('data_hora')
                             if isinstance(order_datetime, str):
                                 try:
@@ -474,14 +471,13 @@ def invoice_extraction_pipeline_v3():
     
     @task()
     def generate_report(db_results: Any) -> str:
-        """
-        Generate comprehensive processing report with metrics.
+        """Generate comprehensive processing report with metrics.
         
         Args:
-            db_results: Database operation results (can be single dict or list).
+            db_results: Database operation results (can be single dict or list)
         
         Returns:
-            Formatted report string with processing statistics.
+            Formatted report string with processing statistics
         """
         if db_results is None:
             db_results = []
@@ -498,32 +494,25 @@ def invoice_extraction_pipeline_v3():
                 total_inserted += len(inserted) if isinstance(inserted, list) else 0
                 total_failed += len(failed) if isinstance(failed, list) else 0
         
-        report = f"""
-        ╔══════════════════════════════════════════════════════════╗
-        ║     📊 Invoice Processing Report - V3 (AI SDK)           ║
-        ╚══════════════════════════════════════════════════════════╝
+        success_rate = (total_inserted/(total_inserted+total_failed)*100) if (total_inserted+total_failed) > 0 else 0
         
-        ✅ Successfully Processed: {total_inserted}
-        ❌ Failed Operations: {total_failed}
-        🎯 Success Rate: {(total_inserted/(total_inserted+total_failed)*100) if (total_inserted+total_failed) > 0 else 0:.1f}%
+        report = f"""Invoice Processing Report - V3 (AI SDK):
         
-        🚀 V3 Advantages:
-        ├─ 40% less code than V2
-        ├─ Built-in LLM retry logic
-        ├─ Type-safe data handling
-        └─ Simplified error management
+Successfully Processed: {total_inserted}
+Failed Operations: {total_failed}
+Success Rate: {success_rate:.1f}%
         
-        🔄 Asset Updates:
-        ├─ Input: minio://invoices/incoming/ ✓
-        └─ Output: postgres://invoice_db/invoices.invoices ✓
-        """
+V3 Advantages:
+- 40% less code than V2
+- Built-in LLM retry logic
+- Type-safe data handling
+- Simplified error management"""
         
         logger.info(report)
         
         from airflow.stats import Stats
         Stats.gauge('invoice_extractor.v3.total_processed', total_inserted)
-        Stats.gauge('invoice_extractor.v3.success_rate', 
-                   (total_inserted/(total_inserted+total_failed)*100) if (total_inserted+total_failed) > 0 else 0)
+        Stats.gauge('invoice_extractor.v3.success_rate', success_rate)
         
         return report
     

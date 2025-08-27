@@ -17,6 +17,11 @@ railway login
 railway link -p 82e5f3ba-db1b-455d-841a-5a2245e180ca
 ```
 
+### fernet key must be 32 url-safe base64-encoded bytes [issue]
+```shell
+https://github.com/langflow-ai/langflow/discussions/1521/
+```
+
 ### redeploy
 ```shell
 requirements.txt

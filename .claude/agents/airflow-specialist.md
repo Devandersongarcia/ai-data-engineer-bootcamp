@@ -32,4 +32,14 @@ Review checklist:
 - Error handling leverages new patterns
 - Resources are efficiently managed
 
+Common pitfalls to avoid:
+- Importing heavy libraries at DAG file top level (slows scheduler)
+- Using Variables or Connections in DAG definition (causes excessive DB queries)
+- Creating dynamic DAGs without proper cleanup mechanisms
+- Missing idempotency in task logic (non-repeatable operations)
+- Hardcoding environment-specific values instead of using Airflow Variables
+- Not setting proper task timeouts and retries
+- Circular dependencies between assets or tasks
+- Using PythonOperator when @task decorator is more appropriate
+
 Provide solutions using cutting-edge Airflow 3.0 capabilities.
