@@ -5,11 +5,16 @@ This module provides various extractors to identify and extract metadata
 such as titles, keywords, entities, summaries, and questions from documents.
 """
 
-import re
-from typing import List, Dict, Any, Optional, Set
-from datetime import datetime
-from collections import Counter
+from __future__ import annotations
+
 import hashlib
+import re
+from collections import Counter
+from datetime import datetime
+from typing import TYPE_CHECKING, Any, Optional
+
+if TYPE_CHECKING:
+    from typing import Dict, Set
 
 from llama_index.core import Document
 from llama_index.core.extractors import (
@@ -37,7 +42,7 @@ class CustomTitleExtractor(BaseExtractor):
     from documents.
     """
     
-    def __init__(self, llm: Optional[OpenAI] = None):
+    def __init__(self, llm: Optional[OpenAI] = None) -> None:
         """
         Initialize custom title extractor.
         
@@ -53,7 +58,7 @@ class CustomTitleExtractor(BaseExtractor):
             re.compile(r'^[IVX]+\.?\s+(.+)$', re.MULTILINE),  # Roman numerals
         ]
     
-    async def aextract(self, nodes: List[Document]) -> List[Dict[str, Any]]:
+    async def aextract(self, nodes: list[Document]) -> list[Dict[str, Any]]:
         """
         Asynchronously extract titles from documents.
         
@@ -208,7 +213,7 @@ class AdvancedKeywordExtractor(BaseExtractor):
             logger.warning("Spacy model not found, using basic extraction")
             self.nlp = None
     
-    async def aextract(self, nodes: List[Document]) -> List[Dict[str, Any]]:
+    async def aextract(self, nodes: list[Document]) -> list[Dict[str, Any]]:
         """
         Asynchronously extract keywords from documents.
         
@@ -411,7 +416,7 @@ class TopicExtractor(BaseExtractor):
             'architecture': ['microservice', 'api', 'design pattern', 'scalability', 'system design']
         }
     
-    async def aextract(self, nodes: List[Document]) -> List[Dict[str, Any]]:
+    async def aextract(self, nodes: list[Document]) -> list[Dict[str, Any]]:
         """
         Asynchronously extract topics from documents.
         

@@ -9,6 +9,8 @@ import asyncio
 import argparse
 import sys
 from pathlib import Path
+from __future__ import annotations
+
 from typing import Optional
 
 from loguru import logger
@@ -18,12 +20,15 @@ from pipeline import RAGIngestionPipeline
 from data_loader import MinIODocumentLoader
 
 
-async def validate_connections(settings: Settings):
+async def validate_connections(settings: Settings) -> bool:
     """
     Validate all service connections.
     
     Args:
         settings: Application settings
+        
+    Returns:
+        True if all connections are valid, False otherwise
     """
     logger.info("Validating service connections...")
     
@@ -48,7 +53,7 @@ async def validate_connections(settings: Settings):
     return validation['all_valid']
 
 
-async def list_documents(settings: Settings):
+async def list_documents(settings: Settings) -> None:
     """
     List all documents in MinIO.
     
@@ -69,7 +74,7 @@ async def list_documents(settings: Settings):
     print("="*50 + "\n")
 
 
-async def process_single_document(settings: Settings, document_name: str):
+async def process_single_document(settings: Settings, document_name: str) -> None:
     """
     Process a single document.
     
@@ -115,7 +120,7 @@ async def process_single_document(settings: Settings, document_name: str):
         logger.error(f"Failed to process document: {e}")
 
 
-async def run_full_pipeline(settings: Settings):
+async def run_full_pipeline(settings: Settings) -> None:
     """
     Run the complete pipeline on all documents.
     
@@ -175,7 +180,7 @@ async def run_full_pipeline(settings: Settings):
     print("="*60 + "\n")
 
 
-async def clear_caches(settings: Settings):
+async def clear_caches(settings: Settings) -> None:
     """
     Clear all caches.
     
@@ -192,7 +197,7 @@ async def clear_caches(settings: Settings):
     print("\n✅ Caches cleared successfully\n")
 
 
-def main():
+def main() -> None:
     """
     Main CLI entry point.
     """
@@ -238,12 +243,13 @@ def main():
     if args.verbose:
         logger.level("DEBUG")
     
-    # Print header
-    print("\n" + "="*60)
+    # Display header
+    header = "=" * 60
+    print(f"\n{header}")
     print("🚀 RAG Ingestion Pipeline v1.0")
-    print("="*60)
+    print(header)
     
-    # Execute action
+    # Execute specified action
     try:
         if args.action == 'validate':
             asyncio.run(validate_connections(settings))

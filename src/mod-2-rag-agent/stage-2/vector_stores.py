@@ -5,10 +5,15 @@ This module handles the ingestion of embedded chunks into
 both Pinecone (cloud) and Qdrant (self-hosted) vector databases.
 """
 
-from typing import List, Dict, Any, Optional, Tuple
+from __future__ import annotations
+
 import asyncio
-from datetime import datetime
 import uuid
+from datetime import datetime
+from typing import TYPE_CHECKING, Any, Optional
+
+if TYPE_CHECKING:
+    from typing import Dict, Tuple
 
 from pinecone import Pinecone, ServerlessSpec
 from qdrant_client import QdrantClient
@@ -198,9 +203,9 @@ class PineconeIngester:
     
     async def ingest_batch(
         self, 
-        chunks: List[Chunk], 
+        chunks: list[Chunk], 
         namespace: Optional[str] = None
-    ) -> Tuple[int, int]:
+    ) -> tuple[int, int]:
         """
         Ingest batch of chunks into Pinecone.
         
@@ -270,7 +275,7 @@ class PineconeIngester:
         top_k: int = 10,
         namespace: Optional[str] = None,
         filter: Optional[Dict] = None
-    ) -> List[Dict[str, Any]]:
+    ) -> list[Dict[str, Any]]:
         """
         Query Pinecone index.
         
@@ -519,7 +524,7 @@ class QdrantIngester:
             self.stats['failed_ingestions'] += 1
             return False
     
-    async def ingest_batch(self, chunks: List[Chunk]) -> Tuple[int, int]:
+    async def ingest_batch(self, chunks: list[Chunk]) -> tuple[int, int]:
         """
         Ingest batch of chunks into Qdrant.
         
@@ -579,7 +584,7 @@ class QdrantIngester:
         query_embedding: np.ndarray,
         top_k: int = 10,
         filter: Optional[Dict] = None
-    ) -> List[Dict[str, Any]]:
+    ) -> list[Dict[str, Any]]:
         """
         Query Qdrant collection.
         
@@ -696,7 +701,7 @@ class DualVectorStoreManager:
     
     async def ingest_chunks(
         self, 
-        chunks: List[Chunk],
+        chunks: list[Chunk],
         strategy: str = "both"
     ) -> Dict[str, Any]:
         """

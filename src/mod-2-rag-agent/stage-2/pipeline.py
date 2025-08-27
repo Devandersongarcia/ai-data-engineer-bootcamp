@@ -6,11 +6,16 @@ and ingestion pipeline for end-to-end document processing.
 """
 
 import asyncio
-from typing import List, Dict, Any, Optional
-from pathlib import Path
+from __future__ import annotations
+
+import json
 import time
 from datetime import datetime
-import json
+from pathlib import Path
+from typing import TYPE_CHECKING, Any, Optional
+
+if TYPE_CHECKING:
+    from typing import Dict
 
 from llama_index.core import Document
 from llama_index.llms.openai import OpenAI
@@ -34,7 +39,7 @@ class RAGIngestionPipeline:
     through preprocessing, chunking, embedding, and vector store ingestion.
     """
     
-    def __init__(self, settings: Optional[Settings] = None):
+    def __init__(self, settings: Optional[Settings] = None) -> None:
         """
         Initialize RAG ingestion pipeline.
         
@@ -69,7 +74,7 @@ class RAGIngestionPipeline:
         
         logger.info("Pipeline initialized successfully")
     
-    def _setup_logging(self):
+    def _setup_logging(self) -> None:
         """Configure pipeline logging."""
         log_file = self.settings.log_file
         log_level = self.settings.log_level
@@ -201,10 +206,10 @@ class RAGIngestionPipeline:
     
     async def process_batch(
         self, 
-        documents: List[Document],
+        documents: list[Document],
         concurrent: bool = True,
         max_concurrent: int = 4
-    ) -> List[Dict[str, Any]]:
+    ) -> list[Dict[str, Any]]:
         """
         Process batch of documents.
         
@@ -220,7 +225,7 @@ class RAGIngestionPipeline:
         results = []
         
         if concurrent:
-            # Process concurrently with semaphore for rate limiting
+            # Process concurrently with rate limiting
             semaphore = asyncio.Semaphore(max_concurrent)
             
             async def process_with_semaphore(doc):
@@ -244,7 +249,7 @@ class RAGIngestionPipeline:
                     processed_results.append(result)
             results = processed_results
         else:
-            # Process sequentially
+            # Process documents sequentially
             for doc in tqdm(documents, desc="Processing documents"):
                 result = await self.process_document(doc)
                 results.append(result)
@@ -350,12 +355,10 @@ class RAGIngestionPipeline:
         except Exception as e:
             validation['issues'].append(f"MinIO connection failed: {e}")
         
-        # Test OpenAI
+        # Test OpenAI connection
         try:
-            # Test with a simple OpenAI call instead of async
             from openai import OpenAI as OpenAIClient
             client = OpenAIClient(api_key=self.settings.openai.api_key)
-            # Test the API key by making a simple request
             response = client.models.list()
             if response:
                 validation['openai'] = True

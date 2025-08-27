@@ -5,13 +5,18 @@ This module handles embedding generation with caching, batching, and
 optimization strategies for efficient vector creation.
 """
 
+from __future__ import annotations
+
+import asyncio
 import hashlib
 import pickle
-from typing import List, Dict, Any, Optional, Tuple
-from pathlib import Path
-import asyncio
-from concurrent.futures import ThreadPoolExecutor
 import time
+from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
+from typing import TYPE_CHECKING, Any, Optional
+
+if TYPE_CHECKING:
+    from typing import Dict, Tuple
 
 import numpy as np
 from llama_index.embeddings.openai import OpenAIEmbedding
@@ -33,7 +38,7 @@ class EmbeddingCache:
     for identical content.
     """
     
-    def __init__(self, config: CacheConfig):
+    def __init__(self, config: CacheConfig) -> None:
         """
         Initialize embedding cache.
         
@@ -183,7 +188,7 @@ class OptimizedEmbeddingGenerator:
     for cost and performance optimization.
     """
     
-    def __init__(self, settings: Settings):
+    def __init__(self, settings: Settings) -> None:
         """
         Initialize optimized embedding generator.
         
@@ -276,9 +281,9 @@ class OptimizedEmbeddingGenerator:
     
     async def generate_embeddings_batch(
         self,
-        texts: List[str],
+        texts: list[str],
         use_secondary: bool = False
-    ) -> List[np.ndarray]:
+    ) -> list[np.ndarray]:
         """
         Generate embeddings for batch of texts efficiently.
         
@@ -366,9 +371,9 @@ class OptimizedEmbeddingGenerator:
     
     async def generate_chunk_embeddings(
         self,
-        chunks: List[Chunk],
+        chunks: list[Chunk],
         strategy: str = "adaptive"
-    ) -> List[Chunk]:
+    ) -> list[Chunk]:
         """
         Generate embeddings for chunks with strategy selection.
         
@@ -417,7 +422,7 @@ class OptimizedEmbeddingGenerator:
     
     def _determine_embedding_strategy(
         self,
-        chunks: List[Chunk],
+        chunks: list[Chunk],
         strategy: str
     ) -> Dict[str, bool]:
         """
@@ -494,7 +499,7 @@ class EmbeddingValidator:
     Ensures embeddings meet quality standards before ingestion.
     """
     
-    def __init__(self, expected_dimensions: int = 3072):
+    def __init__(self, expected_dimensions: int = 3072) -> None:
         """
         Initialize embedding validator.
         
@@ -536,7 +541,7 @@ class EmbeddingValidator:
         
         return len(issues) == 0, issues
     
-    def validate_batch(self, embeddings: List[np.ndarray]) -> Tuple[bool, Dict[int, List[str]]]:
+    def validate_batch(self, embeddings: list[np.ndarray]) -> tuple[bool, Dict[int, list[str]]]:
         """
         Validate batch of embeddings.
         
@@ -560,7 +565,7 @@ class EmbeddingValidator:
         
         return all_valid, all_issues
     
-    def check_similarity_distribution(self, embeddings: List[np.ndarray]) -> Dict[str, float]:
+    def check_similarity_distribution(self, embeddings: list[np.ndarray]) -> Dict[str, float]:
         """
         Check similarity distribution of embeddings.
         

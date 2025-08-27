@@ -5,8 +5,14 @@ Uses simplified chunking to avoid timeouts.
 
 import asyncio
 import time
-from typing import List
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from loguru import logger
+
+if TYPE_CHECKING:
+    from typing import Any
 
 from config import load_settings
 from data_loader import MinIODocumentLoader
@@ -19,8 +25,12 @@ import numpy as np
 import hashlib
 
 
-async def run_fast_pipeline():
-    """Run optimized pipeline with simple chunking."""
+async def run_fast_pipeline() -> dict[str, Any]:
+    """Run optimized pipeline with simple chunking.
+    
+    Returns:
+        Pipeline execution results
+    """
     
     logger.info("Starting optimized RAG pipeline...")
     start_time = time.time()
@@ -34,17 +44,18 @@ async def run_fast_pipeline():
     preprocessor = DocumentPreprocessor()
     vector_manager = DualVectorStoreManager(settings)
     
-    # Initialize embeddings with larger batch size
+    # Initialize embedding model with optimized batch size
     embedding_model = OpenAIEmbedding(
         api_key=settings.openai.api_key,
         model="text-embedding-3-large",
-        embed_batch_size=20  # Larger batch for efficiency
+        embed_batch_size=20
     )
     
-    # Print header
-    print("\n" + "="*60)
+    # Display header  
+    header = "=" * 60
+    print(f"\n{header}")
     print("🚀 RAG Fast Pipeline - Optimized Processing")
-    print("="*60)
+    print(header)
     
     # List and load documents
     files = loader.list_docx_files()
@@ -73,10 +84,10 @@ async def run_fast_pipeline():
             reduction = processed_doc.metadata['preprocessing']['reduction_percentage']
             logger.info(f"  ✓ Preprocessed: {reduction}% reduction")
             
-            # Simple chunking with optimal size
+            # Create chunks with optimal parameters
             parser = SimpleNodeParser.from_defaults(
-                chunk_size=512,  # Optimal size for context
-                chunk_overlap=50  # Good overlap for continuity
+                chunk_size=512,
+                chunk_overlap=50
             )
             
             nodes = parser.get_nodes_from_documents([processed_doc])
@@ -144,12 +155,13 @@ async def run_fast_pipeline():
             logger.error(f"Failed to process {file_info['name']}: {e}")
             continue
     
-    # Summary
+    # Display summary
     total_time = time.time() - start_time
     
-    print("\n" + "="*60)
+    summary_header = "=" * 60
+    print(f"\n{summary_header}")
     print("✨ Pipeline Complete!")
-    print("="*60)
+    print(summary_header)
     print(f"📊 Statistics:")
     print(f"  • Documents processed: {successful_docs}/{len(files)}")
     print(f"  • Total chunks: {total_chunks}")

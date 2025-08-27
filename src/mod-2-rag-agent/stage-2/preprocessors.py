@@ -5,12 +5,17 @@ This module provides comprehensive text cleaning and normalization
 functionality to prepare documents for chunking and embedding.
 """
 
+from __future__ import annotations
+
 import re
-import unicodedata
-from typing import List, Dict, Any, Optional, Set, Tuple
-from datetime import datetime
 import string
+import unicodedata
 from collections import Counter
+from datetime import datetime
+from typing import TYPE_CHECKING, Any, Optional
+
+if TYPE_CHECKING:
+    from typing import Dict, Set, Tuple
 
 from llama_index.core import Document
 from llama_index.core.node_parser import NodeParser
@@ -26,7 +31,7 @@ class TextCleaner:
     and standardizing text format.
     """
     
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize text cleaner with default settings."""
         self.control_chars = self._get_control_characters()
         self.whitespace_pattern = re.compile(r'\s+')
@@ -36,7 +41,7 @@ class TextCleaner:
             re.compile(r'^\s*[-*+]\s+')
         ]
         
-    def _get_control_characters(self) -> Set[str]:
+    def _get_control_characters(self) -> set[str]:
         """
         Get set of control characters to remove.
         
@@ -247,7 +252,7 @@ class TextNormalizer:
     consistent text format across documents.
     """
     
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize text normalizer with default settings."""
         self.abbreviations = self._load_common_abbreviations()
         self.date_patterns = [
@@ -475,7 +480,7 @@ class DocumentPreprocessor:
     documents for further processing.
     """
     
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize document preprocessor with cleaner and normalizer."""
         self.cleaner = TextCleaner()
         self.normalizer = TextNormalizer()
@@ -528,7 +533,7 @@ class DocumentPreprocessor:
         
         return preprocessed_doc
     
-    def preprocess_batch(self, documents: List[Document]) -> List[Document]:
+    def preprocess_batch(self, documents: list[Document]) -> list[Document]:
         """
         Preprocess a batch of documents.
         
@@ -560,7 +565,7 @@ class DocumentPreprocessor:
         
         return preprocessed
     
-    def validate_preprocessing(self, document: Document) -> Tuple[bool, List[str]]:
+    def validate_preprocessing(self, document: Document) -> tuple[bool, list[str]]:
         """
         Validate preprocessed document quality.
         

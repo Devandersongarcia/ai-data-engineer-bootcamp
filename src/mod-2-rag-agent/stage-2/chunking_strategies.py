@@ -5,11 +5,16 @@ This module implements semantic, hierarchical, and decoupled chunking strategies
 to optimize both retrieval accuracy and synthesis quality.
 """
 
-from typing import List, Dict, Any, Optional, Tuple
-from dataclasses import dataclass
+from __future__ import annotations
+
 import hashlib
-from enum import Enum
+from dataclasses import dataclass
 from datetime import datetime
+from enum import Enum
+from typing import TYPE_CHECKING, Any, Optional
+
+if TYPE_CHECKING:
+    from typing import Dict, Tuple
 
 from llama_index.core import Document
 from llama_index.core.node_parser import (
@@ -50,7 +55,7 @@ class Chunk:
     chunk_type: ChunkType
     metadata: Dict[str, Any]
     parent_id: Optional[str] = None
-    child_ids: List[str] = None
+    child_ids: list[str] = None
     embedding: Optional[np.ndarray] = None
     
     def __post_init__(self):
@@ -97,7 +102,7 @@ class SemanticChunker:
         self.config = config
         self.tokenizer = tiktoken.encoding_for_model("gpt-4")
     
-    def chunk_document(self, document: Document) -> List[Chunk]:
+    def chunk_document(self, document: Document) -> list[Chunk]:
         """
         Chunk document using semantic similarity.
         
@@ -122,7 +127,7 @@ class SemanticChunker:
         logger.info(f"Created {len(chunks)} semantic chunks from {len(sentences)} sentences")
         return chunks
     
-    def _split_into_sentences(self, text: str) -> List[str]:
+    def _split_into_sentences(self, text: str) -> list[str]:
         """
         Split text into sentences.
         
@@ -143,7 +148,7 @@ class SemanticChunker:
         
         return sentences
     
-    def _generate_embeddings(self, texts: List[str]) -> np.ndarray:
+    def _generate_embeddings(self, texts: list[str]) -> np.ndarray:
         """
         Generate embeddings for text segments.
         
@@ -165,10 +170,10 @@ class SemanticChunker:
     
     def _group_by_similarity(
         self, 
-        sentences: List[str], 
+        sentences: list[str], 
         embeddings: np.ndarray,
         base_metadata: Dict[str, Any]
-    ) -> List[Chunk]:
+    ) -> list[Chunk]:
         """
         Group sentences by semantic similarity.
         
@@ -228,7 +233,7 @@ class SemanticChunker:
     
     def _create_chunk(
         self, 
-        sentences: List[str], 
+        sentences: list[str], 
         base_metadata: Dict[str, Any],
         chunk_type: ChunkType
     ) -> Chunk:
@@ -279,7 +284,7 @@ class HierarchicalChunker:
         self.llm = llm
         self.tokenizer = tiktoken.encoding_for_model("gpt-4")
     
-    def chunk_document(self, document: Document) -> Dict[str, List[Chunk]]:
+    def chunk_document(self, document: Document) -> Dict[str, list[Chunk]]:
         """
         Create hierarchical chunks from document.
         
@@ -488,7 +493,7 @@ class HierarchicalChunker:
             parent_id=parent_id
         )
     
-    def _extract_sections(self, text: str) -> List[Dict[str, str]]:
+    def _extract_sections(self, text: str) -> list[Dict[str, str]]:
         """
         Extract sections from text.
         
@@ -543,7 +548,7 @@ class HierarchicalChunker:
         
         return sections
     
-    def _extract_paragraphs(self, text: str) -> List[str]:
+    def _extract_paragraphs(self, text: str) -> list[str]:
         """
         Extract paragraphs from text.
         
@@ -565,7 +570,7 @@ class HierarchicalChunker:
         
         return cleaned
     
-    def _extract_sentences(self, text: str) -> List[str]:
+    def _extract_sentences(self, text: str) -> list[str]:
         """
         Extract sentences from text.
         
@@ -653,7 +658,7 @@ class DecoupledChunker:
         self.config = config
         self.tokenizer = tiktoken.encoding_for_model("gpt-4")
     
-    def create_decoupled_chunks(self, document: Document) -> Tuple[List[Chunk], List[Chunk]]:
+    def create_decoupled_chunks(self, document: Document) -> tuple[list[Chunk], list[Chunk]]:
         """
         Create separate retrieval and synthesis chunks.
         
@@ -679,7 +684,7 @@ class DecoupledChunker:
         
         return retrieval_chunks, synthesis_chunks
     
-    def _create_retrieval_chunks(self, document: Document) -> List[Chunk]:
+    def _create_retrieval_chunks(self, document: Document) -> list[Chunk]:
         """
         Create small chunks optimized for retrieval.
         
@@ -719,7 +724,7 @@ class DecoupledChunker:
         
         return chunks
     
-    def _create_synthesis_chunks(self, document: Document) -> List[Chunk]:
+    def _create_synthesis_chunks(self, document: Document) -> list[Chunk]:
         """
         Create larger chunks optimized for synthesis.
         
@@ -759,7 +764,7 @@ class DecoupledChunker:
         
         return chunks
     
-    def _link_chunks(self, retrieval_chunks: List[Chunk], synthesis_chunks: List[Chunk]):
+    def _link_chunks(self, retrieval_chunks: list[Chunk], synthesis_chunks: list[Chunk]) -> None:
         """
         Link retrieval chunks to their corresponding synthesis chunks.
         
@@ -862,7 +867,7 @@ class SmartChunkingPipeline:
         
         return result
     
-    def chunk_batch(self, documents: List[Document]) -> List[Dict[str, Any]]:
+    def chunk_batch(self, documents: list[Document]) -> list[Dict[str, Any]]:
         """
         Apply smart chunking to batch of documents.
         

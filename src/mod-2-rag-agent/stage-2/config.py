@@ -7,8 +7,10 @@ using Pydantic Settings for type safety and validation.
 
 from pydantic_settings import BaseSettings
 from pydantic import Field
-from typing import Optional, List
+from __future__ import annotations
+
 from pathlib import Path
+from typing import Any, Optional
 
 
 class MinIOConfig(BaseSettings):
@@ -98,7 +100,7 @@ class ChunkingConfig(BaseSettings):
     hierarchical_levels: str = Field(default="document,section,paragraph,sentence", alias="HIERARCHICAL_LEVELS")
     
     @property
-    def hierarchical_levels_list(self) -> List[str]:
+    def hierarchical_levels_list(self) -> list[str]:
         """Get hierarchical levels as a list."""
         return [level.strip() for level in self.hierarchical_levels.split(",")]
     
@@ -134,7 +136,7 @@ class CacheConfig(BaseSettings):
     cache_dir: Path = Field(default=Path("./pipeline_cache"), alias="CACHE_DIR")
     ttl: int = Field(default=86400, alias="CACHE_TTL")
     
-    def ensure_cache_dir_exists(self):
+    def ensure_cache_dir_exists(self) -> None:
         """Ensure cache directory exists."""
         self.cache_dir.mkdir(parents=True, exist_ok=True)
     
@@ -178,7 +180,7 @@ class Settings(BaseSettings):
     log_file: Path = Field(default=Path("./logs/rag_pipeline.log"), alias="LOG_FILE")
     log_format: str = Field(default="json", alias="LOG_FORMAT")
     
-    def ensure_log_dir_exists(self):
+    def ensure_log_dir_exists(self) -> None:
         """Ensure log directory exists."""
         self.log_file.parent.mkdir(parents=True, exist_ok=True)
     

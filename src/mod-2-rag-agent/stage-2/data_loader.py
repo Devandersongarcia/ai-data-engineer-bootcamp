@@ -5,14 +5,20 @@ This module provides functionality to connect to MinIO (S3-compatible storage)
 and load DOCX documents with proper parsing and initial processing.
 """
 
+from __future__ import annotations
+
+import hashlib
 import io
 import tempfile
-from pathlib import Path
-from typing import List, Dict, Any, Optional, Generator
+from collections.abc import Generator
 from datetime import datetime
-import hashlib
+from pathlib import Path
+from typing import TYPE_CHECKING, Any, Optional
 
 from minio import Minio
+
+if TYPE_CHECKING:
+    from typing import Dict
 from minio.error import S3Error
 from llama_index.core import Document
 from llama_index.core.readers import SimpleDirectoryReader
@@ -32,7 +38,7 @@ class MinIODocumentLoader:
     and initial parsing of DOCX files into LlamaIndex Document objects.
     """
     
-    def __init__(self, settings: Settings):
+    def __init__(self, settings: Settings) -> None:
         """
         Initialize MinIO document loader.
         
@@ -80,7 +86,7 @@ class MinIODocumentLoader:
             raise
     
     @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))
-    def list_docx_files(self) -> List[Dict[str, Any]]:
+    def list_docx_files(self) -> list[Dict[str, Any]]:
         """
         List all DOCX files in the configured bucket.
         
@@ -226,7 +232,7 @@ class MinIODocumentLoader:
                     return 0
         return None
     
-    def _extract_table_data(self, table) -> List[List[str]]:
+    def _extract_table_data(self, table) -> list[list[str]]:
         """
         Extract data from a DOCX table.
         
@@ -248,7 +254,7 @@ class MinIODocumentLoader:
         
         return table_data
     
-    def create_llamaindex_documents(self, parsed_data: Dict[str, Any]) -> List[Document]:
+    def create_llamaindex_documents(self, parsed_data: Dict[str, Any]) -> list[Document]:
         """
         Convert parsed DOCX data to LlamaIndex Document objects.
         
@@ -396,7 +402,7 @@ class MinIODocumentLoader:
                 logger.error(f"Failed to process {file_info['name']}: {e}")
                 continue
     
-    def load_specific_document(self, object_name: str) -> List[Document]:
+    def load_specific_document(self, object_name: str) -> list[Document]:
         """
         Load a specific DOCX document from MinIO.
         
