@@ -1,0 +1,32 @@
+# UberEats Brasil Production Requirements
+
+# Core dependencies
+streamlit>=1.28.0
+pandas>=2.0.0
+python-dotenv>=1.0.0
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.0
+
+# AI/ML dependencies
+openai>=1.0.0
+vanna>=0.5.0
+
+# Vector databases
+qdrant-client>=1.6.0
+chromadb>=0.4.0
+
+# Logging and monitoring
+logging-tree>=1.9
+
+# Phase 2 enhancements (already included in base dependencies)
+# - Enhanced logging utilities
+# - Advanced security validation
+# - Custom error handling
+# - Health check capabilities
+# - Performance monitoring
+
+# Development dependencies (optional)
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
+black>=23.0.0
+ruff>=0.1.0

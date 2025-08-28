@@ -1,0 +1,11 @@
+# Development environment dependencies
+langchain==0.1.0
+langchain-openai==0.0.5
+streamlit==1.29.0
+sqlalchemy==2.0.23
+pandas==2.1.4
+python-dotenv==1.0.0
+psycopg2-binary==2.9.9
+
+# Langfuse for prompt management
+langfuse==2.58.2
