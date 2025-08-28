@@ -1,0 +1,152 @@
+# Task Configuration for Abandoned Order Detection System
+# Defines the workflow tasks that agents execute to analyze and handle potentially abandoned orders
+
+driver_analysis:
+  description: >
+    Perform comprehensive driver analysis for order {order_id}:
+    
+    1. Query the order details to identify the assigned driver
+    2. Check the driver's current GPS location and compare to the delivery destination
+    3. Verify if the driver is online, offline, or in another status
+    4. Calculate the time elapsed since the driver's last GPS movement
+    5. Determine if the driver is stuck (no movement for >20 minutes)
+    6. Assess the distance remaining to the delivery destination
+    7. Evaluate traffic conditions and possible obstacles (if movement is slow)
+    8. Identify any patterns suggesting app issues or vehicle problems
+    9. Generate a risk assessment (LOW/MEDIUM/HIGH) based on findings
+    10. Return a structured report with clear recommendations
+    
+    Use the driver_status_tool to get real-time GPS and movement data.
+    Consider that drivers may legitimately stop for traffic lights (1-2 min), 
+    construction (5-10 min), or to confirm addresses (2-3 min).
+    
+  expected_output: >
+    A detailed JSON report containing:
+    - driver_id: The driver's unique identifier
+    - driver_name: Driver's name for reference
+    - driver_status: Current status (online/offline/busy)
+    - last_movement: Timestamp of last GPS update
+    - minutes_since_movement: Calculated time since last movement
+    - current_location: Current GPS coordinates
+    - distance_to_destination_km: Remaining distance to delivery
+    - is_stuck: Boolean indicating if driver hasn't moved for >20 minutes
+    - stuck_reason: Probable cause if stuck (traffic/lost/app_issue/unknown)
+    - movement_pattern: Description of recent movement (stationary/slow/normal)
+    - risk_level: LOW/MEDIUM/HIGH assessment
+    - confidence_score: 0-100 confidence in the assessment
+    - recommendation: CONTINUE (monitor) / INVESTIGATE (escalate) / CANCEL (abandon)
+    - reasoning: Clear explanation of the recommendation
+
+timeline_analysis:
+  description: >
+    Perform detailed timeline analysis for order {order_id}:
+    
+    1. Query comprehensive order details including all timestamps
+    2. Calculate the total elapsed time since order creation
+    3. Compare current time against the estimated delivery time
+    4. Determine if the order is overdue and by how many minutes
+    5. Analyze the time spent in each order phase:
+       - Time from creation to driver assignment
+       - Time from assignment to pickup
+       - Time from pickup to current moment
+    6. Check against SLA thresholds:
+       - Warning: 15 minutes overdue
+       - Violation: 30 minutes overdue  
+       - Severe: 45+ minutes overdue
+    7. Consider time of day and typical delivery patterns
+    8. Factor in any delays reported in the order events
+    9. Calculate the likelihood of successful delivery if continued
+    10. Generate SLA compliance status and recommendations
+    
+    Use the time_analysis_tool for precise timeline calculations.
+    Remember that estimated delivery times can have a 10-15 minute variance.
+    
+  expected_output: >
+    A comprehensive JSON report containing:
+    - order_id: The order's unique identifier
+    - order_number: Customer-facing order number
+    - order_age_minutes: Total time since order was placed
+    - estimated_delivery_time: Original ETA provided to customer
+    - current_time: Current timestamp for reference
+    - minutes_overdue: How many minutes past the ETA (0 if not overdue)
+    - is_overdue: Boolean flag for overdue status
+    - severely_overdue: Boolean flag for >45 minutes overdue
+    - phase_breakdown:
+        - order_to_assignment_min: Time to assign driver
+        - assignment_to_pickup_min: Time for driver to reach restaurant
+        - pickup_to_current_min: Time since pickup
+    - sla_status: COMPLIANT / WARNING / VIOLATED / SEVERELY_VIOLATED
+    - sla_details: Explanation of SLA status
+    - delivery_probability: 0-100% chance of successful delivery
+    - risk_level: LOW/MEDIUM/HIGH based on timeline
+    - recommendation: CONTINUE / ESCALATE / CANCEL
+    - urgency: Immediate action required (true/false)
+    - reasoning: Detailed explanation of the analysis
+
+cancellation_decision:
+  description: >
+    Review all analysis reports for order {order_id} and make the final decision:
+    
+    1. Carefully review the driver analysis report:
+       - Assess driver movement and stuck status
+       - Consider the risk level and confidence score
+       - Evaluate the driver's recommendation
+    
+    2. Thoroughly examine the timeline analysis report:
+       - Check SLA compliance status
+       - Review how overdue the order is
+       - Consider the delivery probability
+    
+    3. Query current order status to ensure it hasn't been updated
+    
+    4. Weigh multiple factors for the decision:
+       - If driver is stuck (>20 min) AND order is severely overdue (>45 min): HIGH confidence cancellation
+       - If driver is offline AND order is overdue: HIGH confidence cancellation
+       - If only one condition is met: MEDIUM confidence, consider escalation
+       - If neither condition is clearly met: LOW confidence, continue monitoring
+    
+    5. Consider customer impact:
+       - How long has the customer been waiting?
+       - Is this a peak hour with known delays?
+       - Would cancellation with refund be better than continued waiting?
+    
+    6. Make the final decision with clear reasoning
+    
+    7. If cancelling:
+       - Use order_update_tool to update status to 'cancelled'
+       - Provide detailed cancellation reason
+       - Include confidence score (0.0 to 1.0)
+       - Use notification_tool to inform the customer
+    
+    8. If not cancelling:
+       - Provide clear reasons for continuing
+       - Suggest monitoring frequency
+       - Set escalation triggers
+    
+    Your decision directly impacts customer satisfaction and driver ratings.
+    Be decisive but fair. When in doubt, favor the customer experience.
+    
+  expected_output: >
+    A final decision report in JSON format containing:
+    - order_id: The order being evaluated
+    - order_number: Customer-facing reference
+    - decision: CANCEL or CONTINUE
+    - confidence_score: 0.0 to 1.0 (confidence in the decision)
+    - primary_reason: Main factor driving the decision
+    - supporting_factors: List of additional considerations
+    - driver_summary:
+        - status: Current driver situation
+        - risk: Driver-related risk assessment
+    - timeline_summary:
+        - status: Current timeline situation
+        - risk: Timeline-related risk assessment
+    - actions_taken: List of actions performed:
+        - status_update: What status change was made
+        - notification_sent: Customer notification details
+        - refund_initiated: If applicable
+    - follow_up: If not cancelled:
+        - next_check_minutes: When to check again
+        - escalation_trigger: What would trigger immediate action
+    - decision_timestamp: When this decision was made
+    - agent_reasoning: Detailed explanation of the decision logic
+    - customer_message: The notification message sent or to be sent
