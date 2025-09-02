@@ -1,0 +1,12 @@
+# Analytics Dashboard Requirements
+streamlit>=1.28.0
+plotly>=5.15.0
+pandas>=2.0.0
+numpy>=1.24.0
+
+# For enhanced charts
+altair>=5.0.0
+seaborn>=0.12.0
+
+# For real-time data processing
+redis>=5.0.0
