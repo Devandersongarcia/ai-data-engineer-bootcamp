@@ -2,10 +2,6 @@
 
 > **Master the art of building production-ready AI-powered data systems through hands-on implementation of real-world projects**
 
-<p align="center">
-  <img src="images/bootcamp-banner.png" alt="AI Data Engineer Bootcamp Banner" width="100%">
-</p>
-
 ## 🎯 Overview
 
 Welcome to the most comprehensive AI Data Engineering bootcamp, where you'll build **5 production-ready systems** that combine modern data engineering with cutting-edge AI technologies. Each module represents a complete, deployable solution addressing real enterprise challenges.
@@ -36,7 +32,7 @@ Welcome to the most comprehensive AI Data Engineering bootcamp, where you'll bui
 **Transform unstructured documents into structured insights with Apache Airflow and LLMs**
 
 <p align="center">
-  <img src="images/mod-1-architecture.png" alt="Module 1 Architecture" width="80%">
+  <img src="images/mod-1.png" alt="Module 1: Document Intelligence & Extraction" width="90%">
 </p>
 
 #### 🎯 What You'll Build
@@ -65,7 +61,7 @@ A complete invoice processing pipeline that extracts structured data from PDFs u
 **Build intelligent knowledge retrieval systems from prototype to production**
 
 <p align="center">
-  <img src="images/mod-2-architecture.png" alt="Module 2 Architecture" width="80%">
+  <img src="images/mod-2.png" alt="Module 2: RAG Agent Systems" width="90%">
 </p>
 
 #### 🎯 What You'll Build
@@ -91,7 +87,7 @@ Two complete RAG implementations: a visual prototype with Langflow and a product
 #### 🛠️ Technologies
 `LangFlow` `LlamaIndex` `Pinecone` `Qdrant` `OpenAI Embeddings` `PostgreSQL`
 
-[**→ View Module Documentation**](src/mod-2-rag-agent/README.md)
+[**→ View Module Documentation**](src/mod-2-rag-agent/readme.md)
 
 ---
 
@@ -99,7 +95,7 @@ Two complete RAG implementations: a visual prototype with Langflow and a product
 **Democratize data access with natural language query interfaces**
 
 <p align="center">
-  <img src="images/mod-3-architecture.png" alt="Module 3 Architecture" width="80%">
+  <img src="images/mod-3.png" alt="Module 3: Text-to-SQL Systems" width="90%">
 </p>
 
 #### 🎯 What You'll Build
@@ -133,7 +129,7 @@ Three implementation approaches for converting natural language to SQL: Developm
 **Orchestrate intelligent agent teams for complex problem-solving**
 
 <p align="center">
-  <img src="images/mod-4-architecture.png" alt="Module 4 Architecture" width="80%">
+  <img src="images/mod-4.png" alt="Module 4: Multi-Agent Systems" width="90%">
 </p>
 
 #### 🎯 What You'll Build
@@ -159,7 +155,7 @@ Two multi-agent implementations: CrewAI for team orchestration and Agno for adva
 #### 🛠️ Technologies
 `CrewAI` `Agno` `OpenAI GPT-4` `Redis` `PostgreSQL` `Docker`
 
-[**→ View Module Documentation**](src/mod-4-multi-agent/)
+[**→ View Module Documentation**](src/mod-4-multi-agent/readme.md)
 
 ---
 
@@ -167,7 +163,7 @@ Two multi-agent implementations: CrewAI for team orchestration and Agno for adva
 **Enterprise-grade fraud detection with streaming analytics and AI agents**
 
 <p align="center">
-  <img src="images/mod-5-architecture.png" alt="Module 5 Architecture" width="80%">
+  <img src="images/mod-5.png" alt="Module 5: Real-Time Fraud Detection" width="90%">
 </p>
 
 #### 🎯 What You'll Build
@@ -198,19 +194,19 @@ A complete real-time fraud detection system processing 10,000+ transactions per 
 ### 📈 Progressive Skill Development
 
 ```mermaid
-graph TB
+graph LR
     A[Foundation] --> B[Intermediate] --> C[Advanced] --> D[Expert]
     
-    A1[Module 1<br/>Document Processing] --> A
-    A2[Module 2 Stage 1<br/>RAG Prototype] --> A
+    A1[Module 1: Document Processing] --> A
+    A2[Module 2: RAG Prototype] --> A
     
-    B1[Module 2 Stage 2<br/>Production RAG] --> B
-    B2[Module 3 Dev<br/>Text-to-SQL] --> B
+    B1[Module 2: Production RAG] --> B
+    B2[Module 3: Text-to-SQL] --> B
     
-    C1[Module 3 Prod<br/>Enterprise SQL] --> C
-    C2[Module 4<br/>Multi-Agent] --> C
+    C1[Module 3: Enterprise SQL] --> C
+    C2[Module 4: Multi-Agent] --> C
     
-    D1[Module 5<br/>Fraud Detection] --> D
+    D1[Module 5: Fraud Detection] --> D
     
     style A fill:#4CAF50
     style B fill:#2196F3
@@ -232,25 +228,19 @@ graph TB
 
 ## 🛠️ Technology Stack
 
-### 🎨 Complete Technology Landscape
-
-<p align="center">
-  <img src="images/tech-stack.png" alt="Technology Stack" width="90%">
-</p>
-
-#### Core Infrastructure
+### Core Infrastructure
 - **Orchestration**: Apache Airflow 3.0, Dagster
 - **Stream Processing**: Apache Spark 4.0, Kafka
 - **Databases**: PostgreSQL, MongoDB, Redis
 - **Storage**: MinIO, AWS S3, GCS
 
-#### AI & Machine Learning
+### AI & Machine Learning
 - **LLMs**: OpenAI GPT-4, Claude, Llama
 - **Frameworks**: LangChain, LlamaIndex, CrewAI, Agno
 - **Vector DBs**: Pinecone, Qdrant, Weaviate
 - **Embeddings**: OpenAI, Cohere, HuggingFace
 
-#### Observability & Monitoring
+### Observability & Monitoring
 - **LLM Monitoring**: Langfuse, Weights & Biases
 - **APM**: Datadog, New Relic
 - **Logging**: ELK Stack, Grafana Loki
@@ -317,38 +307,49 @@ Each module is self-contained with its own documentation:
 
 ---
 
-## 📚 Additional Resources
-
-### 📁 Repository Structure
+## 📁 Repository Structure
 
 ```
 ai-data-engineer-bootcamp/
 ├── src/                        # Source code for all modules
-│   ├── mod-1-document-extract/
-│   ├── mod-2-rag-agent/
-│   ├── mod-3-tex-to-sql/
-│   ├── mod-4-multi-agent/
-│   └── mod-5-fraud-detection/
+│   ├── mod-1-document-extract/ # Invoice processing with Airflow
+│   ├── mod-2-rag-agent/        # RAG systems (Langflow + LlamaIndex)
+│   ├── mod-3-tex-to-sql/       # Text-to-SQL implementations
+│   ├── mod-4-multi-agent/      # Multi-agent systems (CrewAI + Agno)
+│   └── mod-5-fraud-detection/  # Real-time fraud detection
 ├── storage/                    # Sample data and resources
-│   ├── csv/                   # CSV datasets
-│   ├── json/                  # JSON data files
-│   ├── pdf/                   # PDF documents
-│   └── README.md              # Storage documentation
-├── images/                     # Architecture diagrams
-├── docs/                       # Additional documentation
-├── scripts/                    # Utility scripts
-└── tests/                      # Global test suites
+│   ├── csv/                    # CSV datasets
+│   ├── json/                   # JSON data files
+│   ├── pdf/                    # PDF documents
+│   └── readme.md               # Storage documentation
+├── images/                     # Module architecture images
+│   ├── mod-1.png               # Document extraction architecture
+│   ├── mod-2.png               # RAG systems architecture
+│   ├── mod-3.png               # Text-to-SQL architecture
+│   ├── mod-4.png               # Multi-agent architecture
+│   └── mod-5.png               # Fraud detection architecture
+├── tasks/                      # Challenges and exercises
+├── .claude/                    # Claude Code agents and settings
+│   └── agents/                 # Custom AI agents
+└── readme.md                   # This file
 ```
 
-### 📖 Documentation Hub
+---
 
-- **[Storage Guide](storage/README.md)**: Understanding data resources
-- **[Contributing Guide](CONTRIBUTING.md)**: How to contribute
-- **[Troubleshooting](docs/troubleshooting.md)**: Common issues
-- **[Best Practices](docs/best-practices.md)**: Coding standards
-- **[Deployment Guide](docs/deployment.md)**: Production deployment
+## 📚 Documentation Hub
 
-### 🔗 External Resources
+### Module Documentation
+- **[Module 1: Document Intelligence](src/mod-1-document-extract/readme.md)**
+- **[Module 2: RAG Systems](src/mod-2-rag-agent/readme.md)**
+- **[Module 3: Text-to-SQL](src/mod-3-tex-to-sql/readme.md)**
+- **[Module 4: Multi-Agent Systems](src/mod-4-multi-agent/readme.md)**
+- **[Module 5: Fraud Detection](src/mod-5-fraud-detection/readme.md)**
+
+### Supporting Documentation
+- **[Storage Guide](storage/readme.md)**: Understanding data resources
+- **[Tasks & Challenges](tasks/readme.md)**: Hands-on exercises
+
+### External Resources
 
 #### Official Documentation
 - [Apache Airflow](https://airflow.apache.org/docs/)
@@ -364,18 +365,7 @@ ai-data-engineer-bootcamp/
 
 ---
 
-## 🏆 Achievements & Certifications
-
-### 🎯 Module Completion Badges
-
-<p align="center">
-  <img src="images/badges.png" alt="Achievement Badges" width="80%">
-</p>
-
-Upon completing each module, you'll earn:
-- **Module Badge**: Recognition of completion
-- **Project Portfolio**: Deployable solution
-- **Skill Certification**: Verified competencies
+## 🏆 Achievements & Milestones
 
 ### 📊 Success Metrics
 
@@ -386,32 +376,26 @@ Track your progress with these milestones:
 - [ ] Process 10,000+ TPS (Module 5)
 - [ ] Build a multi-agent system (Module 4)
 
+### 🎯 Learning Outcomes
+
+Upon completion, you'll have:
+- **Technical Mastery**: Built 5 production-ready AI systems
+- **Portfolio Projects**: Deployable solutions for your resume
+- **Industry Skills**: Real-world engineering experience
+- **AI Expertise**: Practical LLM and agent implementation knowledge
+
 ---
 
-## 🤝 Community & Support
+## 🤝 Contributing
 
-### 💬 Get Help
-
-- **GitHub Issues**: [Report bugs or request features](https://github.com/yourusername/ai-data-engineer-bootcamp/issues)
-- **Discussions**: [Ask questions and share ideas](https://github.com/yourusername/ai-data-engineer-bootcamp/discussions)
-- **Office Hours**: Weekly Q&A sessions (Thursdays 2 PM EST)
-- **Email Support**: support@ai-data-engineering.com
-
-### 🌟 Contributing
-
-We welcome contributions! See our [Contributing Guidelines](CONTRIBUTING.md) for:
-- Code contribution standards
+We welcome contributions! Areas for improvement:
+- Additional use cases and examples
+- Performance optimizations
+- Bug fixes and enhancements
 - Documentation improvements
-- Bug reports and feature requests
-- Community guidelines
+- New module suggestions
 
-### 👥 Contributors
-
-<p align="center">
-  <img src="images/contributors.png" alt="Contributors" width="80%">
-</p>
-
-Special thanks to all contributors who make this bootcamp possible!
+Please read our contributing guidelines before submitting PRs.
 
 ---
 
@@ -422,27 +406,19 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 <p align="center">
-  <strong>🚀 Ready to become an AI Data Engineer?</strong>
-</p>
-
-<p align="center">
-  <a href="src/mod-1-document-extract/">
-    <img src="images/start-button.png" alt="Start Your Journey" width="200">
-  </a>
-</p>
-
-<p align="center">
+  <strong>🚀 Ready to become an AI Data Engineer?</strong><br>
   <i>Join thousands of engineers mastering AI-powered data systems</i>
+</p>
+
+<p align="center">
+  <a href="src/mod-1-document-extract/">📦 Start with Module 1</a> •
+  <a href="https://github.com/yourusername/ai-data-engineer-bootcamp">⭐ Star</a> •
+  <a href="https://github.com/yourusername/ai-data-engineer-bootcamp/fork">🍴 Fork</a> •
+  <a href="https://github.com/yourusername/ai-data-engineer-bootcamp/subscription">👁️ Watch</a>
 </p>
 
 ---
 
 <p align="center">
   Made with ❤️ by the AI Data Engineering Community
-</p>
-
-<p align="center">
-  <a href="https://github.com/yourusername/ai-data-engineer-bootcamp">⭐ Star</a> •
-  <a href="https://github.com/yourusername/ai-data-engineer-bootcamp/fork">🍴 Fork</a> •
-  <a href="https://github.com/yourusername/ai-data-engineer-bootcamp/subscription">👁️ Watch</a>
 </p>
