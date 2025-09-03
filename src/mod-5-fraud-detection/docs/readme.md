@@ -38,7 +38,7 @@ pip install -r requirements.txt
 
 # Configure environment
 cp .env.template .env
-# Edit .env with your credentials (see INSTALLATION.md)
+# Edit .env with your credentials (see installation.md)
 
 # Validate setup
 python bin/validate-environment
@@ -112,7 +112,7 @@ graph TB
 
 ## 📖 Documentation
 
-- **[Installation Guide](INSTALLATION.md)**: Complete setup instructions
+- **[Installation Guide](installation.md)**: Complete setup instructions
 - **[Architecture Guide](ARCHITECTURE.md)**: System design and components  
 - **[User Guide](USER_GUIDE.md)**: Usage and operation instructions
 - **[Developer Guide](DEVELOPER_GUIDE.md)**: Development and customization
@@ -148,7 +148,7 @@ REDIS_URL=redis://localhost:6379/0
 DATABASE_URL=postgresql://user:pass@localhost/fraud_db
 ```
 
-See [INSTALLATION.md](INSTALLATION.md) for complete configuration details.
+See [INSTALLATION.md](installation.md) for complete configuration details.
 
 ## 🚨 Production Considerations
 
@@ -201,7 +201,7 @@ tail -f logs/fraud_detection_*.log
 
 ## 🎯 Next Steps
 
-1. **Setup**: Follow [INSTALLATION.md](INSTALLATION.md) for complete setup
+1. **Setup**: Follow [INSTALLATION.md](installation.md) for complete setup
 2. **Configuration**: Configure your environment variables
 3. **Validation**: Run connection validation tools
 4. **Launch**: Start the fraud detection system

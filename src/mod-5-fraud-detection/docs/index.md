@@ -6,8 +6,8 @@ Complete guide to the UberEats Fraud Detection System documentation.
 
 | Document | Description | When to Use |
 |----------|-------------|-------------|
-| **[README.md](README.md)** | Project overview and quick start | First-time users, project overview |
-| **[INSTALLATION.md](INSTALLATION.md)** | Complete setup guide | Setting up the system |
+| **[README.md](readme.md)** | Project overview and quick start | First-time users, project overview |
+| **[INSTALLATION.md](installation.md)** | Complete setup guide | Setting up the system |
 
 ## 🔧 System Components
 
@@ -33,8 +33,8 @@ Complete guide to the UberEats Fraud Detection System documentation.
 ## 🎯 Quick Navigation
 
 ### For New Users
-1. Start with [README.md](README.md) - Project overview
-2. Follow [INSTALLATION.md](INSTALLATION.md) - Setup guide
+1. Start with [README.md](readme.md) - Project overview
+2. Follow [INSTALLATION.md](installation.md) - Setup guide
 3. Review component guides based on your needs
 
 ### For Developers
@@ -43,7 +43,7 @@ Complete guide to the UberEats Fraud Detection System documentation.
 3. [Logging Guide](guides/logging.md) - Debugging and monitoring
 
 ### For Operations
-1. [Installation Guide](INSTALLATION.md) - Deployment procedures
+1. [Installation Guide](installation.md) - Deployment procedures
 2. [Logging Guide](guides/logging.md) - Monitoring and troubleshooting
 3. [Dashboard Guide](components/dashboard.md) - Analytics and monitoring
 

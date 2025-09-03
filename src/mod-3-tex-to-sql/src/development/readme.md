@@ -27,7 +27,7 @@ Visit http://localhost:8501 and start asking questions like:
 
 ## 📚 Documentation
 
-**📖 [Complete Documentation Hub](../docs/README.md)** - Comprehensive platform documentation
+**📖 [Complete Documentation Hub](../docs/readme.md)** - Comprehensive platform documentation
 
 **🚀 [Development Setup Guide](../docs/guides/DEVELOPMENT_SETUP.md)** - Step-by-step installation
 

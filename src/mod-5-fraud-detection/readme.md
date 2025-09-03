@@ -85,8 +85,8 @@ mod-5-fraud-detection/
 
 ## 📖 Documentation
 
-- **[Installation Guide](docs/INSTALLATION.md)**: Complete setup instructions
-- **[System Architecture](docs/README.md)**: System overview and components
+- **[Installation Guide](docs/installation.md)**: Complete setup instructions
+- **[System Architecture](docs/readme.md)**: System overview and components
 - **[Streaming Guide](docs/streaming/complete-guide.md)**: Spark streaming details
 - **[AI Agents Guide](docs/agents/complete-guide.md)**: CrewAI agent system
 - **[Dashboard Guide](docs/components/dashboard.md)**: Analytics interface
@@ -130,8 +130,8 @@ python scripts/validate_connections.py
 
 This module includes two comprehensive engineering challenges:
 
-- **[Challenge 01](challenge/01-challenge.md)**: 2-3 day debugging challenge (Portuguese)
-- **[Challenge 02](challenge/02-gip-genai-challenge.md)**: 15-25 day GenAI pipeline challenge (Portuguese)
+- **[Challenge 01](../../tasks/01-challenge.md)**: 2-3 day debugging challenge (Portuguese)
+- **[Challenge 02](../../tasks/02-gip-genai-challenge.md)**: 15-25 day GenAI pipeline challenge (Portuguese)
 
 ## 📊 Performance
 

@@ -356,4 +356,4 @@ def calculate_velocity_score(total_amount, account_age_days, total_orders):
 - [AI Agents System](../agents/complete-guide.md): Agent integration details
 - [RAG System](../rag/README.md): Knowledge base integration
 - [Dashboard Components](../components/dashboard.md): Analytics interfaces
-- [Configuration Guide](../INSTALLATION.md): Environment setup
+- [Configuration Guide](../installation.md): Environment setup

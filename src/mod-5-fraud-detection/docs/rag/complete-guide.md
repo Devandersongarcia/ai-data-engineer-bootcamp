@@ -437,5 +437,5 @@ airflow dags backfill -s 2024-01-01 -e 2024-01-02 fraud_detection_orchestration
 
 - [AI Agents System](../agents/complete-guide.md): Agent integration with RAG
 - [Streaming System](../streaming/complete-guide.md): Real-time RAG integration
-- [Configuration Guide](../INSTALLATION.md): Environment setup
+- [Configuration Guide](../installation.md): Environment setup
 - [Dashboard Components](../components/dashboard.md): RAG metrics visualization

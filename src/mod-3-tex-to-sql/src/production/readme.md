@@ -28,7 +28,7 @@ streamlit run apps/main_app.py --server.port 8501
 
 ## 📚 Documentation
 
-**📖 [Complete Documentation Hub](../docs/README.md)** - Comprehensive platform documentation
+**📖 [Complete Documentation Hub](../docs/readme.md)** - Comprehensive platform documentation
 
 **🚀 [Production Setup Guide](../docs/guides/PRODUCTION_SETUP.md)** - Enterprise deployment guide
 

@@ -298,5 +298,5 @@ python -c "from config.settings import Settings; print(Settings().agent.model_du
 
 - [Streaming Components](../components/streaming.md): Integration with fraud detection pipeline
 - [RAG System](../rag/README.md): Knowledge base and vector search
-- [Configuration Reference](../INSTALLATION.md#agent-configuration): Complete configuration options
+- [Configuration Reference](../installation.md#agent-configuration): Complete configuration options
 - [Security Guide](../guides/logging.md): Security best practices
