@@ -1,0 +1,60 @@
+# Streamlit Dashboard Requirements
+# UberEats Delivery Optimization Interface
+
+# Core Web Framework
+streamlit>=1.28.0
+streamlit-option-menu>=0.3.6
+
+# Data Processing & Analytics
+pandas>=2.0.0
+numpy>=1.24.0
+scipy>=1.10.0
+
+# Visualization
+plotly>=5.15.0
+plotly-express>=0.4.1
+seaborn>=0.12.0
+matplotlib>=3.7.0
+
+# Geospatial & Mapping
+geopy>=2.3.0
+folium>=0.14.0
+geopandas>=0.13.0
+
+# Real-time Data Streaming
+confluent-kafka>=2.1.0
+
+# AI/ML & OpenAI Integration
+openai>=1.3.0
+scikit-learn>=1.3.0
+
+# Configuration & Environment
+python-dotenv>=1.0.0
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+
+# Async & Concurrency
+asyncio
+aiofiles>=23.1.0
+
+# Data Validation & Processing
+jsonschema>=4.17.0
+python-dateutil>=2.8.0
+
+# Caching & Performance
+streamlit-cache>=0.1.0
+diskcache>=5.6.0
+
+# Logging & Monitoring
+structlog>=23.1.0
+
+# Development & Testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+black>=23.3.0
+ruff>=0.0.275
+
+# Optional: Enhanced UI Components
+streamlit-aggrid>=0.3.4
+streamlit-plotly-events>=0.0.6
+streamlit-autorefresh>=0.0.1

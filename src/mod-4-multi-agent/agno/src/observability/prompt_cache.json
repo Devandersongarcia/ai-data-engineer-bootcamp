@@ -1,0 +1,15 @@
+{
+  "prompts": {
+    "test_cache_prompt": {
+      "prompt": "Test cached prompt for {context}: {request}",
+      "variables": [
+        "context",
+        "request"
+      ]
+    }
+  },
+  "expiry": {
+    "test_cache_prompt": "2025-08-29T14:12:04.200790"
+  },
+  "last_updated": "2025-08-28T14:12:04.200796"
+}

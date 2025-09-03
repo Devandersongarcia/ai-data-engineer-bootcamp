@@ -1,0 +1,63 @@
+# Core Agno framework - Latest with full capabilities
+agno>=1.1.1
+
+# Model providers - Latest with enhanced features
+openai>=1.12.0
+anthropic>=0.50.0
+
+# LlamaIndex - Modern architecture with Workflows
+llama-index>=0.13.3
+llama-index-core>=0.13.3
+llama-index-vector-stores-qdrant>=0.8.0
+llama-index-readers-database>=0.6.0
+llama-index-readers-mongodb>=0.5.0
+llama-index-embeddings-openai>=0.5.0
+llama-index-llms-openai>=0.3.0
+
+# Vector database - Latest with local inference
+qdrant-client>=1.12.2
+
+# Database connections - Performance optimized
+sqlalchemy>=2.1.0
+asyncpg>=0.30.0
+psycopg2-binary>=2.9.9
+pymongo>=4.8.0
+motor>=3.4.0
+
+# Enhanced data processing
+pandas>=2.2.0
+pydantic>=2.8.0
+pydantic-settings>=2.4.0
+numpy>=1.26.0
+
+# Production HTTP stack
+fastapi>=0.110.0
+uvicorn[standard]>=0.30.0
+requests>=2.32.0
+httpx>=0.27.0
+
+# Monitoring & Observability
+prometheus-client>=0.20.0
+structlog>=24.4.0
+opentelemetry-api>=1.26.0
+opentelemetry-instrumentation-fastapi>=0.47b0
+opentelemetry-exporter-prometheus>=1.12.0
+opentelemetry-sdk>=1.26.0
+
+# Environment & Security
+python-dotenv>=1.0.1
+cryptography>=42.0.0
+
+# Testing & Quality
+pytest>=8.3.0
+pytest-asyncio>=0.23.8
+pytest-mock>=3.14.0
+pytest-cov>=5.0.0
+
+# Development tools
+mypy>=1.11.0
+ruff>=0.5.0
+black>=24.4.0
+
+# System monitoring
+psutil>=6.0.0
